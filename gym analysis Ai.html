@@ -1,0 +1,1582 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Gym AI — Your Custom Fitness Blueprint</title>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+  <style>
+    /* ── DESIGN TOKENS ── */
+    :root {
+      --black:   #0D0D0D;
+      --white:   #FFFFFF;
+      --ember:   #FF5C1A;   /* primary accent — fire/energy */
+      --ember-dim: rgba(255,92,26,0.12);
+      --ember-glow: rgba(255,92,26,0.25);
+      --coal:    #1A1A1A;
+      --ash:     #2A2A2A;
+      --smoke:   #3D3D3D;
+      --mist:    #7A7A7A;
+      --haze:    #AFAFAF;
+      --fog:     #DEDEDE;
+      --surface: #F6F6F4;
+      --card-bg: #FFFFFF;
+      --border:  #E8E8E4;
+
+      --font-body:    'DM Sans', sans-serif;
+      --font-mono:    'DM Mono', monospace;
+
+      --r-sm: 10px;
+      --r-md: 16px;
+      --r-lg: 22px;
+      --r-xl: 28px;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: var(--font-body);
+      background: var(--surface);
+      color: var(--black);
+      min-height: 100vh;
+      -webkit-font-smoothing: antialiased;
+      overflow-x: hidden;
+    }
+
+    /* ── TYPOGRAPHY ── */
+    .t-hero {
+      font-size: clamp(32px, 8vw, 48px);
+      font-weight: 700;
+      line-height: 1.08;
+      letter-spacing: -0.03em;
+    }
+    .t-title {
+      font-size: 22px;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      line-height: 1.2;
+    }
+    .t-heading {
+      font-size: 17px;
+      font-weight: 600;
+      letter-spacing: -0.01em;
+    }
+    .t-body { font-size: 14px; line-height: 1.6; }
+    .t-small { font-size: 12px; line-height: 1.5; }
+    .t-micro { font-size: 11px; letter-spacing: 0.04em; }
+    .t-mono  { font-family: var(--font-mono); font-size: 13px; }
+
+    .text-mist  { color: var(--mist); }
+    .text-haze  { color: var(--haze); }
+    .text-ember { color: var(--ember); }
+    .text-coal  { color: var(--coal); }
+
+    /* ── HERO SECTION ── */
+    .hero {
+      background: var(--black);
+      color: var(--white);
+      position: relative;
+      overflow: hidden;
+      padding: 52px 24px 44px;
+    }
+
+    /* Animated fire texture behind hero */
+    .hero::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background:
+        radial-gradient(ellipse 60% 50% at 80% 20%, rgba(255,92,26,0.18) 0%, transparent 70%),
+        radial-gradient(ellipse 40% 40% at 20% 80%, rgba(255,140,50,0.10) 0%, transparent 60%);
+      pointer-events: none;
+    }
+
+    .hero-inner {
+      max-width: 480px;
+      margin: 0 auto;
+      position: relative;
+    }
+
+    .hero-eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-family: var(--font-mono);
+      font-size: 10px;
+      font-weight: 500;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--ember);
+      margin-bottom: 18px;
+    }
+    .hero-eyebrow::before {
+      content: '';
+      display: block;
+      width: 18px;
+      height: 1.5px;
+      background: var(--ember);
+      flex-shrink: 0;
+    }
+
+    .hero h1 { color: var(--white); }
+    .hero h1 em {
+      font-style: normal;
+      color: var(--ember);
+    }
+
+    .hero-sub {
+      color: var(--haze);
+      font-size: 14px;
+      line-height: 1.65;
+      margin-top: 14px;
+      max-width: 320px;
+    }
+
+    /* Stat pills row */
+    .stat-row {
+      display: flex;
+      gap: 10px;
+      margin-top: 28px;
+      flex-wrap: wrap;
+    }
+    .stat-pill {
+      background: var(--ash);
+      border: 1px solid var(--smoke);
+      border-radius: 999px;
+      padding: 7px 14px;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .stat-pill .pill-num {
+      font-family: var(--font-mono);
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--white);
+    }
+    .stat-pill .pill-lbl {
+      font-size: 11px;
+      color: var(--mist);
+    }
+
+    /* ── STEP TRACK ── */
+    .step-track {
+      max-width: 480px;
+      margin: 0 auto;
+      padding: 28px 20px 8px;
+    }
+
+    .track-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 16px;
+    }
+    .track-label {
+      font-family: var(--font-mono);
+      font-size: 10px;
+      font-weight: 500;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--mist);
+    }
+    .track-progress {
+      font-family: var(--font-mono);
+      font-size: 10px;
+      color: var(--ember);
+    }
+
+    /* Progress bar */
+    .progress-rail {
+      height: 2px;
+      background: var(--border);
+      border-radius: 999px;
+      margin-bottom: 20px;
+      overflow: hidden;
+    }
+    .progress-fill {
+      height: 100%;
+      background: var(--ember);
+      border-radius: 999px;
+      transition: width 0.5s cubic-bezier(0.4,0,0.2,1);
+      width: 0%;
+    }
+
+    /* ── STEP CARD ── */
+    .step-card {
+      background: var(--card-bg);
+      border: 1.5px solid var(--border);
+      border-radius: var(--r-lg);
+      padding: 20px 20px 18px;
+      cursor: pointer;
+      transition: border-color 0.2s, box-shadow 0.2s, transform 0.15s;
+      margin-bottom: 10px;
+      position: relative;
+      overflow: hidden;
+    }
+    .step-card::after {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 2px;
+      background: var(--ember);
+      transform: scaleX(0);
+      transform-origin: left;
+      transition: transform 0.3s cubic-bezier(0.4,0,0.2,1);
+    }
+    .step-card:hover {
+      border-color: rgba(255,92,26,0.35);
+      box-shadow: 0 4px 20px rgba(255,92,26,0.08);
+      transform: translateY(-1px);
+    }
+    .step-card.completed {
+      border-color: rgba(255,92,26,0.3);
+      background: linear-gradient(145deg, #FFFBF9 0%, #FFF5F0 100%);
+    }
+    .step-card.completed::after { transform: scaleX(1); }
+
+    .step-row {
+      display: flex;
+      align-items: flex-start;
+      gap: 14px;
+    }
+    .step-icon-wrap {
+      width: 40px;
+      height: 40px;
+      border-radius: var(--r-sm);
+      background: var(--surface);
+      border: 1.5px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 18px;
+      flex-shrink: 0;
+      transition: background 0.2s, border-color 0.2s;
+    }
+    .step-card.completed .step-icon-wrap {
+      background: var(--ember-dim);
+      border-color: rgba(255,92,26,0.3);
+    }
+    .step-meta { flex: 1; min-width: 0; }
+    .step-num-tag {
+      font-family: var(--font-mono);
+      font-size: 9px;
+      font-weight: 500;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--haze);
+      margin-bottom: 2px;
+    }
+    .step-card.completed .step-num-tag { color: var(--ember); }
+    .step-title {
+      font-size: 15px;
+      font-weight: 600;
+      letter-spacing: -0.01em;
+      color: var(--black);
+      margin-bottom: 3px;
+    }
+    .step-desc {
+      font-size: 12px;
+      color: var(--mist);
+      line-height: 1.5;
+    }
+    .step-card.completed .step-desc { color: var(--coal); font-weight: 500; }
+
+    .step-arrow {
+      color: var(--fog);
+      font-size: 16px;
+      flex-shrink: 0;
+      margin-top: 2px;
+      transition: color 0.2s, transform 0.2s;
+    }
+    .step-card:hover .step-arrow {
+      color: var(--ember);
+      transform: translateX(2px);
+    }
+    .step-card.completed .step-arrow {
+      color: var(--ember);
+    }
+
+    /* ── CTA SECTION ── */
+    .cta-wrap {
+      max-width: 480px;
+      margin: 0 auto;
+      padding: 10px 20px 32px;
+    }
+
+    .btn-primary {
+      width: 100%;
+      background: var(--ember);
+      color: var(--white);
+      font-family: var(--font-body);
+      font-size: 15px;
+      font-weight: 600;
+      letter-spacing: -0.01em;
+      padding: 16px 24px;
+      border-radius: var(--r-md);
+      border: none;
+      cursor: pointer;
+      transition: background 0.18s, transform 0.12s, box-shadow 0.18s, opacity 0.18s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+    .btn-primary:hover:not(:disabled) {
+      background: #E84A0A;
+      box-shadow: 0 8px 28px rgba(255,92,26,0.35);
+      transform: translateY(-1px);
+    }
+    .btn-primary:active { transform: translateY(0); }
+    .btn-primary:disabled {
+      background: var(--fog);
+      color: var(--haze);
+      cursor: not-allowed;
+      box-shadow: none;
+    }
+
+    .trust-strip {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 16px;
+      margin-top: 12px;
+    }
+    .trust-item {
+      font-size: 11px;
+      color: var(--haze);
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+    .trust-dot {
+      width: 2px; height: 2px;
+      border-radius: 50%;
+      background: var(--fog);
+    }
+
+    /* ── MODAL ── */
+    .modal-overlay {
+      position: fixed; inset: 0;
+      background: rgba(13,13,13,0.65);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      z-index: 200;
+      display: flex;
+      align-items: flex-end;
+      justify-content: center;
+      padding: 0;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.25s;
+    }
+    .modal-overlay.active {
+      opacity: 1;
+      pointer-events: all;
+    }
+
+    .modal-sheet {
+      background: var(--white);
+      width: 100%;
+      max-width: 500px;
+      max-height: 92vh;
+      overflow-y: auto;
+      border-radius: var(--r-xl) var(--r-xl) 0 0;
+      transform: translateY(30px);
+      transition: transform 0.32s cubic-bezier(0.34,1.1,0.64,1);
+      box-shadow: 0 -8px 48px rgba(0,0,0,0.18);
+      padding-bottom: env(safe-area-inset-bottom, 20px);
+    }
+    .modal-overlay.active .modal-sheet {
+      transform: translateY(0);
+    }
+
+    .modal-drag {
+      width: 36px; height: 4px;
+      background: var(--border);
+      border-radius: 999px;
+      margin: 14px auto 0;
+    }
+
+    .modal-head {
+      padding: 20px 22px 0;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .modal-step-tag {
+      font-family: var(--font-mono);
+      font-size: 10px;
+      font-weight: 500;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--ember);
+      background: var(--ember-dim);
+      padding: 4px 10px;
+      border-radius: 999px;
+    }
+    .btn-close {
+      width: 30px; height: 30px;
+      border-radius: 50%;
+      background: var(--surface);
+      border: 1.5px solid var(--border);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 13px;
+      color: var(--mist);
+      transition: all 0.15s;
+    }
+    .btn-close:hover {
+      background: var(--border);
+      color: var(--black);
+    }
+
+    .modal-body { padding: 18px 22px 22px; }
+
+    .modal-title {
+      font-size: 22px;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      line-height: 1.2;
+      margin-bottom: 6px;
+    }
+    .modal-sub {
+      font-size: 13px;
+      color: var(--mist);
+      line-height: 1.55;
+      margin-bottom: 22px;
+    }
+
+    /* ── FORM ELEMENTS ── */
+    .field-group { margin-bottom: 16px; }
+    .field-label {
+      display: block;
+      font-size: 11px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.07em;
+      color: var(--mist);
+      margin-bottom: 7px;
+    }
+    .field-input {
+      width: 100%;
+      background: var(--surface);
+      border: 1.5px solid var(--border);
+      border-radius: var(--r-sm);
+      padding: 12px 14px;
+      font-size: 15px;
+      font-family: var(--font-body);
+      color: var(--black);
+      outline: none;
+      transition: border-color 0.18s, box-shadow 0.18s, background 0.18s;
+      -webkit-appearance: none;
+    }
+    .field-input:focus {
+      border-color: var(--ember);
+      background: var(--white);
+      box-shadow: 0 0 0 3px var(--ember-dim);
+    }
+    .field-input::placeholder { color: var(--haze); }
+
+    .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+
+    /* Phone field */
+    .phone-wrap { display: flex; }
+    .phone-flag {
+      background: var(--surface);
+      border: 1.5px solid var(--border);
+      border-right: none;
+      border-radius: var(--r-sm) 0 0 var(--r-sm);
+      padding: 12px 12px;
+      font-size: 14px;
+      color: var(--mist);
+      white-space: nowrap;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+    .phone-wrap .field-input {
+      border-radius: 0 var(--r-sm) var(--r-sm) 0;
+      border-left: none;
+    }
+    .phone-wrap .field-input:focus { z-index: 1; position: relative; }
+
+    .error-msg {
+      font-size: 12px;
+      color: #D64545;
+      text-align: center;
+      margin-top: 8px;
+      display: none;
+    }
+
+    /* ── GOAL SELECTOR ── */
+    .goal-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 10px; margin-bottom: 22px; }
+    .goal-card {
+      border: 1.5px solid var(--border);
+      border-radius: var(--r-md);
+      padding: 16px 10px 14px;
+      cursor: pointer;
+      text-align: center;
+      background: var(--white);
+      transition: all 0.18s;
+    }
+    .goal-card:hover {
+      border-color: rgba(255,92,26,0.4);
+      background: var(--ember-dim);
+    }
+    .goal-card.selected {
+      border-color: var(--ember);
+      background: var(--ember-dim);
+      box-shadow: 0 0 0 3px var(--ember-glow);
+    }
+    .goal-emoji { font-size: 28px; display: block; margin-bottom: 8px; }
+    .goal-name {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--black);
+      line-height: 1.2;
+      margin-bottom: 3px;
+    }
+    .goal-hint { font-size: 11px; color: var(--mist); }
+
+    /* ── ACTIVITY SELECTOR ── */
+    .activity-list { display: flex; flex-direction: column; gap: 8px; margin-bottom: 22px; }
+    .activity-item {
+      border: 1.5px solid var(--border);
+      border-radius: var(--r-md);
+      padding: 14px 16px;
+      cursor: pointer;
+      background: var(--white);
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      transition: all 0.18s;
+    }
+    .activity-item:hover {
+      border-color: rgba(255,92,26,0.4);
+      background: #FFFAF8;
+    }
+    .activity-item.selected {
+      border-color: var(--ember);
+      background: var(--ember-dim);
+    }
+    .activity-emoji {
+      font-size: 22px;
+      width: 36px;
+      text-align: center;
+      flex-shrink: 0;
+    }
+    .activity-name { font-size: 14px; font-weight: 600; color: var(--black); }
+    .activity-desc { font-size: 12px; color: var(--mist); }
+
+    /* ── RESULTS SECTION ── */
+    #results-section { display: none; }
+    #results-section.visible { display: block; }
+
+    .results-wrap {
+      max-width: 480px;
+      margin: 0 auto;
+      padding: 0 20px 48px;
+    }
+
+    .results-divider {
+      height: 1px;
+      background: var(--border);
+      margin: 28px 0;
+    }
+
+    .greeting-banner {
+      background: var(--black);
+      color: var(--white);
+      border-radius: var(--r-lg);
+      padding: 20px 20px;
+      margin-bottom: 20px;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      position: relative;
+      overflow: hidden;
+    }
+    .greeting-banner::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(ellipse 50% 80% at 100% 50%, rgba(255,92,26,0.25) 0%, transparent 70%);
+      pointer-events: none;
+    }
+    .greeting-icon {
+      width: 44px; height: 44px;
+      background: var(--ember);
+      border-radius: var(--r-sm);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 20px;
+      flex-shrink: 0;
+    }
+    .greeting-name {
+      font-size: 15px;
+      font-weight: 700;
+      color: var(--white);
+    }
+    .greeting-sub {
+      font-size: 12px;
+      color: var(--haze);
+      margin-top: 2px;
+    }
+
+    /* ── CALORIE CARD ── */
+    .calorie-card {
+      background: var(--black);
+      border-radius: var(--r-lg);
+      padding: 24px 20px 20px;
+      margin-bottom: 14px;
+      position: relative;
+      overflow: hidden;
+    }
+    .calorie-card::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background:
+        radial-gradient(ellipse 55% 55% at 95% 5%, rgba(255,92,26,0.22) 0%, transparent 65%),
+        radial-gradient(ellipse 35% 35% at 5% 95%, rgba(255,140,50,0.10) 0%, transparent 60%);
+      pointer-events: none;
+    }
+    .cal-label {
+      font-family: var(--font-mono);
+      font-size: 10px;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--ember);
+      margin-bottom: 4px;
+    }
+    .cal-plan-name {
+      font-size: 15px;
+      font-weight: 600;
+      color: var(--white);
+      margin-bottom: 2px;
+    }
+    .cal-plan-desc {
+      font-size: 12px;
+      color: var(--mist);
+      margin-bottom: 20px;
+    }
+    .cal-num-row {
+      display: flex;
+      align-items: flex-end;
+      gap: 6px;
+    }
+    .cal-num {
+      font-family: var(--font-mono);
+      font-size: 52px;
+      font-weight: 500;
+      color: var(--white);
+      line-height: 1;
+      letter-spacing: -0.03em;
+    }
+    .cal-unit {
+      font-size: 13px;
+      color: var(--mist);
+      padding-bottom: 8px;
+    }
+
+    /* ── MACRO GRID ── */
+    .macro-grid {
+      display: grid;
+      grid-template-columns: repeat(3,1fr);
+      gap: 10px;
+      margin-bottom: 14px;
+    }
+    .macro-tile {
+      background: var(--surface);
+      border: 1.5px solid var(--border);
+      border-radius: var(--r-md);
+      padding: 14px 12px;
+      text-align: center;
+    }
+    .macro-val {
+      font-family: var(--font-mono);
+      font-size: 24px;
+      font-weight: 500;
+      color: var(--black);
+      letter-spacing: -0.02em;
+    }
+    .macro-val span { font-size: 14px; font-weight: 400; color: var(--mist); }
+    .macro-name {
+      font-size: 10px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--mist);
+      margin-top: 4px;
+    }
+    .macro-pct {
+      font-size: 11px;
+      color: var(--haze);
+      margin-top: 2px;
+    }
+
+    /* Macro bars */
+    .macro-bars { background: var(--white); border: 1.5px solid var(--border); border-radius: var(--r-md); padding: 16px; }
+    .bar-row { margin-bottom: 10px; }
+    .bar-row:last-child { margin-bottom: 0; }
+    .bar-label-row {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 5px;
+    }
+    .bar-name { font-size: 12px; font-weight: 600; color: var(--coal); }
+    .bar-pct { font-family: var(--font-mono); font-size: 12px; color: var(--mist); }
+    .bar-track {
+      height: 5px;
+      background: var(--surface);
+      border-radius: 999px;
+      overflow: hidden;
+    }
+    .bar-fill {
+      height: 100%;
+      border-radius: 999px;
+      animation: barGrow 1.2s cubic-bezier(0.4,0,0.2,1) both;
+    }
+
+    /* ── ROUTINE CARD ── */
+    .routine-block {
+      background: var(--white);
+      border: 1.5px solid var(--border);
+      border-radius: var(--r-lg);
+      overflow: hidden;
+      margin-bottom: 12px;
+    }
+    .routine-head {
+      padding: 14px 18px;
+      background: var(--surface);
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .routine-badge {
+      font-family: var(--font-mono);
+      font-size: 10px;
+      font-weight: 500;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      padding: 3px 10px;
+      border-radius: 999px;
+    }
+    .routine-freq {
+      font-size: 12px;
+      color: var(--mist);
+    }
+    .routine-body { padding: 16px 18px; }
+
+    .day-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; margin-bottom: 14px; }
+    .day-pill {
+      font-size: 12px;
+      font-weight: 500;
+      padding: 8px 10px;
+      border-radius: var(--r-sm);
+      background: var(--surface);
+      color: var(--coal);
+    }
+    .day-pill.rest { color: var(--haze); font-weight: 400; }
+
+    .tip-box {
+      border-radius: var(--r-sm);
+      padding: 12px 14px;
+      font-size: 12px;
+      font-weight: 500;
+      line-height: 1.55;
+    }
+
+    /* Nutrition tips */
+    .tip-list { display: flex; flex-direction: column; gap: 10px; padding: 16px 18px; }
+    .tip-item {
+      display: flex;
+      gap: 10px;
+      align-items: flex-start;
+    }
+    .tip-bullet {
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      background: var(--ember-dim);
+      border: 1.5px solid rgba(255,92,26,0.3);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      margin-top: 1px;
+    }
+    .tip-bullet svg {
+      width: 8px; height: 8px;
+      stroke: var(--ember);
+      stroke-width: 2.5;
+      fill: none;
+    }
+    .tip-text { font-size: 13px; color: var(--coal); line-height: 1.55; }
+
+    /* ── SUPPLEMENT GRID ── */
+    .supp-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 12px; }
+    .supp-item {
+      background: var(--surface);
+      border-radius: var(--r-sm);
+      padding: 12px 12px;
+    }
+    .supp-name { font-size: 13px; font-weight: 600; color: var(--black); }
+    .supp-desc { font-size: 11px; color: var(--mist); margin-top: 2px; }
+
+    /* ── GYM CTA ── */
+    .gym-cta-block {
+      background: var(--black);
+      border-radius: var(--r-lg);
+      padding: 24px 20px;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+    .gym-cta-block::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(ellipse 60% 50% at 50% 0%, rgba(255,92,26,0.2) 0%, transparent 70%);
+      pointer-events: none;
+    }
+    .gym-cta-block h3 { color: var(--white); font-size: 19px; letter-spacing: -0.02em; margin-bottom: 8px; }
+    .gym-cta-block p { color: var(--haze); font-size: 13px; margin-bottom: 20px; }
+
+    .btn-outline-white {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      width: 100%;
+      background: transparent;
+      border: 1.5px solid rgba(255,255,255,0.2);
+      color: var(--white);
+      font-family: var(--font-body);
+      font-size: 14px;
+      font-weight: 600;
+      padding: 14px 24px;
+      border-radius: var(--r-md);
+      cursor: pointer;
+      transition: all 0.18s;
+    }
+    .btn-outline-white:hover {
+      background: rgba(255,255,255,0.08);
+      border-color: rgba(255,255,255,0.4);
+    }
+
+    /* ── SUCCESS STATE ── */
+    .success-wrap { text-align: center; padding: 8px 0 4px; }
+    .success-ring {
+      width: 64px; height: 64px;
+      border-radius: 50%;
+      background: var(--ember-dim);
+      border: 2px solid rgba(255,92,26,0.3);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 28px;
+      margin: 0 auto 16px;
+    }
+
+    /* ── ANIMATIONS ── */
+    @keyframes slideUp {
+      from { opacity: 0; transform: translateY(16px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    .slide-up { animation: slideUp 0.4s cubic-bezier(0.4,0,0.2,1) both; }
+    .d1 { animation-delay: 0.07s; }
+    .d2 { animation-delay: 0.14s; }
+    .d3 { animation-delay: 0.21s; }
+
+    @keyframes barGrow {
+      from { width: 0 !important; }
+    }
+    .bar-grow { animation: barGrow 1.2s cubic-bezier(0.4,0,0.2,1) both; }
+
+    @keyframes fadeIn {
+      from { opacity: 0; } to { opacity: 1; }
+    }
+
+    /* ── SCROLLBAR ── */
+    ::-webkit-scrollbar { width: 4px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 999px; }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ════════════════════════════════ HERO ════════════════════════════════ -->
+<section class="hero">
+  <div class="hero-inner">
+    <div class="hero-eyebrow">AI-Powered · Free Blueprint</div>
+    <h1 class="t-hero">Your gym plan,<br/><em>built in 60 seconds.</em></h1>
+    <p class="hero-sub">Answer 3 questions. Get a science-backed calorie target, macro split, and training routine — free.</p>
+    <div class="stat-row">
+      <div class="stat-pill">
+        <span class="pill-num">Mifflin-St&nbsp;Jeor</span>
+        <span class="pill-lbl">formula</span>
+      </div>
+      <div class="stat-pill">
+        <span class="pill-num">100%</span>
+        <span class="pill-lbl">free</span>
+      </div>
+      <div class="stat-pill">
+        <span class="pill-num">via WhatsApp</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ════════════════════════════════ STEP TRACK ════════════════════════════════ -->
+<div class="step-track">
+  <div class="track-header">
+    <span class="track-label">Your Blueprint</span>
+    <span class="track-progress" id="progress-label">0 / 3 complete</span>
+  </div>
+  <div class="progress-rail">
+    <div class="progress-fill" id="progress-fill"></div>
+  </div>
+
+  <!-- Step 1 -->
+  <div class="step-card" id="card-stats" onclick="openModal('modal-stats')">
+    <div class="step-row">
+      <div class="step-icon-wrap">📏</div>
+      <div class="step-meta">
+        <div class="step-num-tag">Step 01</div>
+        <div class="step-title">Core Stats</div>
+        <div class="step-desc" id="desc-stats">Age, gender, height & weight</div>
+      </div>
+      <div class="step-arrow">→</div>
+    </div>
+  </div>
+
+  <!-- Step 2 -->
+  <div class="step-card" id="card-goal" onclick="openModal('modal-goal')">
+    <div class="step-row">
+      <div class="step-icon-wrap">🎯</div>
+      <div class="step-meta">
+        <div class="step-num-tag">Step 02</div>
+        <div class="step-title">Fitness Goal</div>
+        <div class="step-desc" id="desc-goal">Lose fat, build muscle, or stay fit</div>
+      </div>
+      <div class="step-arrow">→</div>
+    </div>
+  </div>
+
+  <!-- Step 3 -->
+  <div class="step-card" id="card-activity" onclick="openModal('modal-activity')">
+    <div class="step-row">
+      <div class="step-icon-wrap">⚡</div>
+      <div class="step-meta">
+        <div class="step-num-tag">Step 03</div>
+        <div class="step-title">Activity Level</div>
+        <div class="step-desc" id="desc-activity">How active are you day-to-day?</div>
+      </div>
+      <div class="step-arrow">→</div>
+    </div>
+  </div>
+</div>
+
+<!-- CTA -->
+<div class="cta-wrap">
+  <button class="btn-primary" id="main-cta" onclick="handleGeneratePlan()" disabled>
+    <span>Complete all 3 steps above</span>
+  </button>
+  <div class="trust-strip">
+    <span class="trust-item">🔒 Private</span>
+    <span class="trust-dot"></span>
+    <span class="trust-item">No spam</span>
+    <span class="trust-dot"></span>
+    <span class="trust-item">Free forever</span>
+  </div>
+</div>
+
+<!-- ════════════════════════════════ RESULTS ════════════════════════════════ -->
+<section id="results-section">
+  <div class="results-wrap">
+    <div class="results-divider"></div>
+
+    <div class="greeting-banner slide-up">
+      <div class="greeting-icon">🎯</div>
+      <div>
+        <div class="greeting-name" id="results-name-greeting">Hey there! 👋</div>
+        <div class="greeting-sub">Your personalised AI fitness blueprint</div>
+      </div>
+    </div>
+
+    <div id="results-container"></div>
+
+    <div class="results-divider"></div>
+
+    <div class="gym-cta-block slide-up">
+      <h3>Ready to train with us?</h3>
+      <p>Book a free trial session and meet your coach in person.</p>
+      <button class="btn-primary" onclick="alert('Redirect to booking or WhatsApp here!')">
+        Book My Free Trial →
+      </button>
+    </div>
+  </div>
+</section>
+
+
+<!-- ════════════════════ MODAL 1 — STATS ════════════════════ -->
+<div class="modal-overlay" id="modal-stats">
+  <div class="modal-sheet">
+    <div class="modal-drag"></div>
+    <div class="modal-head">
+      <span class="modal-step-tag">Step 01 · Stats</span>
+      <button class="btn-close" onclick="closeModal('modal-stats')">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="modal-title">Your core stats</div>
+      <div class="modal-sub">Used to calculate your exact caloric needs via the Mifflin-St Jeor formula.</div>
+
+      <div class="grid-2">
+        <div class="field-group">
+          <label class="field-label">Age</label>
+          <input type="number" id="input-age" class="field-input" placeholder="e.g. 24" min="14" max="75"/>
+        </div>
+        <div class="field-group">
+          <label class="field-label">Gender</label>
+          <select id="input-gender" class="field-input" style="appearance:none; -webkit-appearance:none; cursor:pointer;">
+            <option value="">Select…</option>
+            <option value="male">Male</option>
+            <option value="female">Female</option>
+          </select>
+        </div>
+      </div>
+      <div class="grid-2">
+        <div class="field-group">
+          <label class="field-label">Height (cm)</label>
+          <input type="number" id="input-height" class="field-input" placeholder="e.g. 175" min="130" max="220"/>
+        </div>
+        <div class="field-group">
+          <label class="field-label">Weight (kg)</label>
+          <input type="number" id="input-weight" class="field-input" placeholder="e.g. 72" min="35" max="200"/>
+        </div>
+      </div>
+
+      <button class="btn-primary" onclick="saveStats()">Save & continue →</button>
+      <p id="error-stats" class="error-msg">Please fill all fields correctly.</p>
+    </div>
+  </div>
+</div>
+
+
+<!-- ════════════════════ MODAL 2 — GOAL ════════════════════ -->
+<div class="modal-overlay" id="modal-goal">
+  <div class="modal-sheet">
+    <div class="modal-drag"></div>
+    <div class="modal-head">
+      <span class="modal-step-tag">Step 02 · Goal</span>
+      <button class="btn-close" onclick="closeModal('modal-goal')">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="modal-title">What's your goal?</div>
+      <div class="modal-sub">Your entire plan — calories, macros, and training — changes based on this choice.</div>
+
+      <div class="goal-grid">
+        <div class="goal-card" id="goal-lose" onclick="selectGoal('lose_fat')">
+          <span class="goal-emoji">🔥</span>
+          <div class="goal-name">Lose Fat</div>
+          <div class="goal-hint">Burn & define</div>
+        </div>
+        <div class="goal-card" id="goal-build" onclick="selectGoal('build_muscle')">
+          <span class="goal-emoji">💪</span>
+          <div class="goal-name">Build Muscle</div>
+          <div class="goal-hint">Grow & strengthen</div>
+        </div>
+        <div class="goal-card" id="goal-stay" onclick="selectGoal('stay_fit')">
+          <span class="goal-emoji">⚖️</span>
+          <div class="goal-name">Stay Fit</div>
+          <div class="goal-hint">Maintain & tone</div>
+        </div>
+      </div>
+
+      <button class="btn-primary" onclick="saveGoal()">Save & continue →</button>
+      <p id="error-goal" class="error-msg">Pick a goal to continue.</p>
+    </div>
+  </div>
+</div>
+
+
+<!-- ════════════════════ MODAL 3 — ACTIVITY ════════════════════ -->
+<div class="modal-overlay" id="modal-activity">
+  <div class="modal-sheet">
+    <div class="modal-drag"></div>
+    <div class="modal-head">
+      <span class="modal-step-tag">Step 03 · Activity</span>
+      <button class="btn-close" onclick="closeModal('modal-activity')">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="modal-title">Activity level</div>
+      <div class="modal-sub">Be honest — this directly adjusts your daily calorie target.</div>
+
+      <div class="activity-list">
+        <div class="activity-item" id="act-sedentary" onclick="selectActivity('sedentary',1.2,'Sedentary','Little or no exercise')">
+          <span class="activity-emoji">🛋️</span>
+          <div>
+            <div class="activity-name">Sedentary</div>
+            <div class="activity-desc">Desk job, little or no exercise</div>
+          </div>
+        </div>
+        <div class="activity-item" id="act-light" onclick="selectActivity('light',1.375,'Lightly Active','Light exercise 1–3 days/week')">
+          <span class="activity-emoji">🚶</span>
+          <div>
+            <div class="activity-name">Lightly Active</div>
+            <div class="activity-desc">Light exercise 1–3 days/week</div>
+          </div>
+        </div>
+        <div class="activity-item" id="act-moderate" onclick="selectActivity('moderate',1.55,'Moderately Active','Exercise 3–5 days/week')">
+          <span class="activity-emoji">🏋️</span>
+          <div>
+            <div class="activity-name">Moderately Active</div>
+            <div class="activity-desc">Exercise 3–5 days/week</div>
+          </div>
+        </div>
+        <div class="activity-item" id="act-very" onclick="selectActivity('very',1.725,'Very Active','Hard exercise 6–7 days/week')">
+          <span class="activity-emoji">⚡</span>
+          <div>
+            <div class="activity-name">Very Active</div>
+            <div class="activity-desc">Hard exercise 6–7 days/week</div>
+          </div>
+        </div>
+        <div class="activity-item" id="act-athlete" onclick="selectActivity('athlete',1.9,'Athlete','Intense daily training or physical job')">
+          <span class="activity-emoji">🏆</span>
+          <div>
+            <div class="activity-name">Athlete / Physical Job</div>
+            <div class="activity-desc">Intense daily training or physical work</div>
+          </div>
+        </div>
+      </div>
+
+      <button class="btn-primary" onclick="saveActivity()">Save & continue →</button>
+      <p id="error-activity" class="error-msg">Choose your activity level to continue.</p>
+    </div>
+  </div>
+</div>
+
+
+<!-- ════════════════════ MODAL 4 — LEAD CAPTURE ════════════════════ -->
+<div class="modal-overlay" id="modal-lead">
+  <div class="modal-sheet">
+    <div class="modal-drag"></div>
+
+    <!-- State A: form -->
+    <div id="lead-form-state">
+      <div class="modal-head">
+        <span class="modal-step-tag">🎉 Plan ready</span>
+        <button class="btn-close" onclick="closeModal('modal-lead')">✕</button>
+      </div>
+      <div class="modal-body">
+        <div class="modal-title">Your blueprint is ready.</div>
+        <div class="modal-sub">Enter your details and we'll send it — plus exclusive gym offers — straight to WhatsApp.</div>
+
+        <div class="field-group">
+          <label class="field-label">Full name</label>
+          <input type="text" id="input-name" class="field-input" placeholder="e.g. Ahmed Raza"/>
+        </div>
+        <div class="field-group">
+          <label class="field-label">WhatsApp number</label>
+          <div class="phone-wrap">
+            <div class="phone-flag">🇵🇰 +92</div>
+            <input type="tel" id="input-phone" class="field-input" placeholder="3001234567" maxlength="10"/>
+          </div>
+        </div>
+
+        <button class="btn-primary" onclick="submitLead()">Send me the plan 📲</button>
+        <p id="error-lead" class="error-msg">Enter your name and a valid number.</p>
+        <p style="text-align:center; font-size:11px; color:var(--haze); margin-top:12px;">🔒 We never share your data. No spam, ever.</p>
+      </div>
+    </div>
+
+    <!-- State B: success -->
+    <div id="lead-success-state" style="display:none;" class="modal-body">
+      <div class="success-wrap">
+        <div class="success-ring">🚀</div>
+        <div class="modal-title" style="margin-bottom:8px;">Plan sent!</div>
+        <div class="modal-sub" style="margin-bottom:24px;">Check WhatsApp in a moment — your blueprint is being personalised.</div>
+        <button class="btn-primary" onclick="showResults()">View my plan →</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<script>
+  /* ── STATE ── */
+  const state = {
+    age:null, gender:null, height:null, weight:null,
+    goal:null,
+    activityKey:null, activityMultiplier:null, activityLabel:null, activitySub:null,
+    name:null, phone:null,
+    bmr:null, tdee:null
+  };
+
+  let completedSteps = 0;
+
+  /* ── MODAL ── */
+  function openModal(id) {
+    document.getElementById(id).classList.add('active');
+    document.body.style.overflow = 'hidden';
+  }
+  function closeModal(id) {
+    document.getElementById(id).classList.remove('active');
+    document.body.style.overflow = '';
+  }
+
+  /* ── PROGRESS ── */
+  function updateProgress() {
+    document.getElementById('progress-fill').style.width = (completedSteps / 3 * 100) + '%';
+    document.getElementById('progress-label').textContent = completedSteps + ' / 3 complete';
+  }
+
+  /* ── STEP 1 ── */
+  function saveStats() {
+    const age    = parseInt(document.getElementById('input-age').value);
+    const gender = document.getElementById('input-gender').value;
+    const height = parseFloat(document.getElementById('input-height').value);
+    const weight = parseFloat(document.getElementById('input-weight').value);
+
+    if (!age || !gender || !height || !weight || age < 14 || age > 75 || height < 130 || weight < 35) {
+      document.getElementById('error-stats').style.display = 'block'; return;
+    }
+    document.getElementById('error-stats').style.display = 'none';
+    state.age = age; state.gender = gender; state.height = height; state.weight = weight;
+
+    if (gender === 'male') state.bmr = 10*weight + 6.25*height - 5*age + 5;
+    else                   state.bmr = 10*weight + 6.25*height - 5*age - 161;
+
+    markDone('card-stats', 'desc-stats', `${age} yrs · ${gender === 'male' ? 'Male' : 'Female'} · ${height} cm · ${weight} kg`);
+    closeModal('modal-stats');
+    checkCTA();
+  }
+
+  /* ── STEP 2 ── */
+  let selectedGoal = null;
+  function selectGoal(g) {
+    selectedGoal = g;
+    ['goal-lose','goal-build','goal-stay'].forEach(id => document.getElementById(id).classList.remove('selected'));
+    const map = { lose_fat:'goal-lose', build_muscle:'goal-build', stay_fit:'goal-stay' };
+    document.getElementById(map[g]).classList.add('selected');
+  }
+  function saveGoal() {
+    if (!selectedGoal) { document.getElementById('error-goal').style.display = 'block'; return; }
+    document.getElementById('error-goal').style.display = 'none';
+    state.goal = selectedGoal;
+    const labels = { lose_fat:'🔥 Lose Fat', build_muscle:'💪 Build Muscle', stay_fit:'⚖️ Stay Fit' };
+    markDone('card-goal', 'desc-goal', labels[selectedGoal]);
+    closeModal('modal-goal');
+    checkCTA();
+  }
+
+  /* ── STEP 3 ── */
+  let selectedActivity = null;
+  function selectActivity(key, mult, label, sub) {
+    selectedActivity = { key, mult, label, sub };
+    ['act-sedentary','act-light','act-moderate','act-very','act-athlete'].forEach(id =>
+      document.getElementById(id).classList.remove('selected'));
+    document.getElementById('act-' + key).classList.add('selected');
+  }
+  function saveActivity() {
+    if (!selectedActivity) { document.getElementById('error-activity').style.display = 'block'; return; }
+    document.getElementById('error-activity').style.display = 'none';
+    Object.assign(state, {
+      activityKey: selectedActivity.key,
+      activityMultiplier: selectedActivity.mult,
+      activityLabel: selectedActivity.label,
+      activitySub: selectedActivity.sub
+    });
+    markDone('card-activity', 'desc-activity', `${selectedActivity.label} · ${selectedActivity.sub}`);
+    closeModal('modal-activity');
+    checkCTA();
+  }
+
+  /* ── MARK DONE ── */
+  function markDone(cardId, descId, summary) {
+    document.getElementById(cardId).classList.add('completed');
+    document.getElementById(descId).textContent = summary;
+    completedSteps++;
+    updateProgress();
+  }
+
+  /* ── CTA CHECK ── */
+  function checkCTA() {
+    const cta = document.getElementById('main-cta');
+    const ready = state.age && state.goal && state.activityMultiplier;
+    cta.disabled = !ready;
+    cta.querySelector('span').textContent = ready
+      ? 'Generate my custom plan →'
+      : 'Complete all 3 steps above';
+  }
+
+  /* ── GENERATE PLAN ── */
+  function handleGeneratePlan() {
+    if (!state.age || !state.goal || !state.activityMultiplier) return;
+    document.getElementById('lead-form-state').style.display = 'block';
+    document.getElementById('lead-success-state').style.display = 'none';
+    document.getElementById('input-name').value = '';
+    document.getElementById('input-phone').value = '';
+    openModal('modal-lead');
+  }
+
+  /* ── LEAD SUBMIT ── */
+  function submitLead() {
+    const name  = document.getElementById('input-name').value.trim();
+    const phone = document.getElementById('input-phone').value.trim();
+    if (!name || phone.length < 9) { document.getElementById('error-lead').style.display = 'block'; return; }
+    document.getElementById('error-lead').style.display = 'none';
+    state.name = name; state.phone = phone;
+
+    console.log('🎯 NEW LEAD:', { name, phone:'+92'+phone, goal:state.goal, age:state.age,
+      gender:state.gender, height:state.height, weight:state.weight,
+      activity:state.activityLabel, ts:new Date().toISOString() });
+
+    document.getElementById('lead-form-state').style.display  = 'none';
+    document.getElementById('lead-success-state').style.display = 'block';
+  }
+
+  /* ── SHOW RESULTS ── */
+  function showResults() {
+    closeModal('modal-lead');
+    state.tdee = Math.round(state.bmr * state.activityMultiplier);
+
+    let calories, proteinG, carbG, fatG, goalLabel, goalDesc;
+
+    if (state.goal === 'lose_fat') {
+      calories = Math.round(state.tdee * 0.80);
+      proteinG = Math.round(state.weight * 2.2);
+      fatG     = Math.round(calories * 0.25 / 9);
+      carbG    = Math.round((calories - proteinG*4 - fatG*9) / 4);
+      goalLabel = 'Fat Loss Deficit Plan';
+      goalDesc  = '20% caloric deficit · high protein · moderate carb';
+    } else if (state.goal === 'build_muscle') {
+      calories = Math.round(state.tdee * 1.10);
+      proteinG = Math.round(state.weight * 2.4);
+      fatG     = Math.round(calories * 0.25 / 9);
+      carbG    = Math.round((calories - proteinG*4 - fatG*9) / 4);
+      goalLabel = 'Muscle Bulking Plan';
+      goalDesc  = '10% caloric surplus · high protein · high carb';
+    } else {
+      calories = state.tdee;
+      proteinG = Math.round(state.weight * 2.0);
+      fatG     = Math.round(calories * 0.30 / 9);
+      carbG    = Math.round((calories - proteinG*4 - fatG*9) / 4);
+      goalLabel = 'Maintenance & Toning Plan';
+      goalDesc  = 'Maintenance calories · balanced macros · full body';
+    }
+
+    if (carbG < 50) carbG = 50;
+    const total = proteinG + carbG + fatG;
+    const pPct  = Math.round(proteinG / total * 100);
+    const cPct  = Math.round(carbG    / total * 100);
+    const fPct  = 100 - pPct - cPct;
+
+    document.getElementById('results-name-greeting').textContent = `Hey ${state.name}! 👋`;
+    document.getElementById('results-container').innerHTML = buildResultsHTML(
+      state.goal, goalLabel, goalDesc, calories, proteinG, carbG, fatG, pPct, cPct, fPct
+    );
+
+    document.getElementById('results-section').classList.add('visible');
+    setTimeout(() => {
+      document.getElementById('results-section').scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }, 120);
+  }
+
+  /* ── RESULTS HTML ── */
+  function buildResultsHTML(goal, label, desc, cal, prot, carb, fat, pPct, cPct, fPct) {
+
+    const macroHTML = `
+      <!-- Calorie card -->
+      <div class="calorie-card slide-up">
+        <div class="cal-label">Daily target</div>
+        <div class="cal-plan-name">${label}</div>
+        <div class="cal-plan-desc">${desc}</div>
+        <div class="cal-num-row">
+          <span class="cal-num">${cal}</span>
+          <span class="cal-unit">kcal / day</span>
+        </div>
+      </div>
+
+      <!-- Macro tiles -->
+      <div class="macro-grid slide-up d1">
+        <div class="macro-tile">
+          <div class="macro-val">${prot}<span>g</span></div>
+          <div class="macro-name">Protein</div>
+          <div class="macro-pct">${pPct}% of diet</div>
+        </div>
+        <div class="macro-tile">
+          <div class="macro-val">${carb}<span>g</span></div>
+          <div class="macro-name">Carbs</div>
+          <div class="macro-pct">${cPct}% of diet</div>
+        </div>
+        <div class="macro-tile">
+          <div class="macro-val">${fat}<span>g</span></div>
+          <div class="macro-name">Fats</div>
+          <div class="macro-pct">${fPct}% of diet</div>
+        </div>
+      </div>
+
+      <!-- Macro bars -->
+      <div class="macro-bars slide-up d2" style="margin-bottom:14px;">
+        <div class="bar-row">
+          <div class="bar-label-row">
+            <span class="bar-name">Protein</span>
+            <span class="bar-pct">${pPct}%</span>
+          </div>
+          <div class="bar-track"><div class="bar-fill bar-grow" style="width:${pPct}%; background:#FF5C1A;"></div></div>
+        </div>
+        <div class="bar-row">
+          <div class="bar-label-row">
+            <span class="bar-name">Carbohydrates</span>
+            <span class="bar-pct">${cPct}%</span>
+          </div>
+          <div class="bar-track"><div class="bar-fill bar-grow" style="width:${cPct}%; background:#A8C86A; animation-delay:0.2s;"></div></div>
+        </div>
+        <div class="bar-row">
+          <div class="bar-label-row">
+            <span class="bar-name">Fats</span>
+            <span class="bar-pct">${fPct}%</span>
+          </div>
+          <div class="bar-track"><div class="bar-fill bar-grow" style="width:${fPct}%; background:#F0A860; animation-delay:0.4s;"></div></div>
+        </div>
+      </div>
+    `;
+
+    let routineHTML = '';
+
+    if (goal === 'build_muscle') {
+      routineHTML = `
+        <div class="routine-block slide-up d1">
+          <div class="routine-head">
+            <span class="routine-badge" style="background:#FF5C1A; color:#fff;">Strength Training</span>
+            <span class="routine-freq">4 days / week</span>
+          </div>
+          <div class="routine-body">
+            <div class="day-grid">
+              ${['Day 1 · Chest & Triceps','Day 2 · Back & Biceps','Day 3 · Rest / Cardio','Day 4 · Legs & Core',
+                 'Day 5 · Shoulders','Day 6 · Full Body','Day 7 · Rest'].map((d,i) =>
+                `<div class="day-pill ${i===2||i===6?'rest':''}">${d}</div>`).join('')}
+            </div>
+            <div class="tip-box" style="background:#FFF5F0; border:1px solid rgba(255,92,26,0.25); color:var(--coal);">
+              💡 Progressive overload is the key driver of muscle growth — increase weight or reps each week.
+            </div>
+          </div>
+        </div>
+        <div class="routine-block slide-up d2">
+          <div class="routine-head">
+            <span class="routine-badge" style="background:var(--surface); color:var(--mist); border:1px solid var(--border);">Bulking Nutrition</span>
+          </div>
+          <div class="tip-list">
+            ${['Eat every 3–4 hours to consistently hit your calorie target.',
+               'Prioritise rice, oats, and sweet potato as your main carb sources.',
+               'Pre-workout: carb + protein meal 90 minutes before training.',
+               'Post-workout: whey shake + banana within 30 minutes of finishing.'].map(t =>
+              `<div class="tip-item">
+                <div class="tip-bullet"><svg viewBox="0 0 10 8"><polyline points="1,4 3.5,6.5 9,1"/></svg></div>
+                <div class="tip-text">${t}</div>
+              </div>`).join('')}
+          </div>
+        </div>
+      `;
+    } else if (goal === 'lose_fat') {
+      routineHTML = `
+        <div class="routine-block slide-up d1">
+          <div class="routine-head">
+            <span class="routine-badge" style="background:#FDECEA; color:#C0392B;">Cardio Routine</span>
+            <span class="routine-freq">5 days / week</span>
+          </div>
+          <div class="routine-body">
+            <div class="day-grid">
+              ${['Mon · HIIT 20 min','Tue · Weights + Walk','Wed · LISS 40 min','Thu · Weights',
+                 'Fri · HIIT 25 min','Sat · Active Recovery','Sun · Rest'].map((d,i) =>
+                `<div class="day-pill ${i===5||i===6?'rest':''}">${d}</div>`).join('')}
+            </div>
+            <div class="tip-box" style="background:#FFF5F5; border:1px solid #F5C6C6; color:#C0392B;">
+              🔥 HIIT burns more fat post-workout. Aim for 75–85% max heart rate during intervals.
+            </div>
+          </div>
+        </div>
+        <div class="routine-block slide-up d2">
+          <div class="routine-head">
+            <span class="routine-badge" style="background:var(--surface); color:var(--mist); border:1px solid var(--border);">Fat Loss Nutrition</span>
+          </div>
+          <div class="tip-list">
+            ${['Start every meal with protein to control hunger throughout the day.',
+               'Drink 3L of water daily — thirst is frequently mistaken for hunger.',
+               'Cut liquid calories: juice, sodas, and sweet tea quietly sabotage deficits.',
+               'Eat whole foods 80% of the time; build in 20% flexibility to stay consistent.'].map(t =>
+              `<div class="tip-item">
+                <div class="tip-bullet"><svg viewBox="0 0 10 8"><polyline points="1,4 3.5,6.5 9,1"/></svg></div>
+                <div class="tip-text">${t}</div>
+              </div>`).join('')}
+          </div>
+        </div>
+      `;
+    } else {
+      routineHTML = `
+        <div class="routine-block slide-up d1">
+          <div class="routine-head">
+            <span class="routine-badge" style="background:#EEF8F0; color:#2E7D32;">Balanced Routine</span>
+            <span class="routine-freq">5 days / week</span>
+          </div>
+          <div class="routine-body">
+            <div class="day-grid">
+              ${['Mon · Full Body Weights','Tue · 30 min Cardio','Wed · Core & Mobility','Thu · Upper Body',
+                 'Fri · Lower Body','Sat · Leisure Activity','Sun · Rest'].map((d,i) =>
+                `<div class="day-pill ${i===5||i===6?'rest':''}">${d}</div>`).join('')}
+            </div>
+            <div class="tip-box" style="background:#EEF8F0; border:1px solid #A5D6A7; color:#2E7D32;">
+              ⚖️ Consistency beats intensity. 3–5 moderate sessions weekly is the sweet spot for lifelong fitness.
+            </div>
+          </div>
+        </div>
+        <div class="routine-block slide-up d2">
+          <div class="routine-head">
+            <span class="routine-badge" style="background:var(--surface); color:var(--mist); border:1px solid var(--border);">Maintenance Nutrition</span>
+          </div>
+          <div class="tip-list">
+            ${['Track weekly weight trends rather than daily fluctuations.',
+               'Build meals around protein and veg first, then add carbs to fill calories.',
+               'Allow planned free meals — rigid restriction tends to lead to binging.',
+               'Prioritise 7–9 hours of sleep; poor sleep directly accelerates muscle loss.'].map(t =>
+              `<div class="tip-item">
+                <div class="tip-bullet"><svg viewBox="0 0 10 8"><polyline points="1,4 3.5,6.5 9,1"/></svg></div>
+                <div class="tip-text">${t}</div>
+              </div>`).join('')}
+          </div>
+        </div>
+      `;
+    }
+
+    const suppHTML = `
+      <div class="routine-block slide-up d3">
+        <div class="routine-head">
+          <span class="routine-badge" style="background:#F4F0FF; color:#6B3FA0;">Supplement Stack</span>
+          <span class="routine-freq">Optional baseline</span>
+        </div>
+        <div class="routine-body" style="padding-top:12px;">
+          <div class="supp-grid">
+            ${[['Whey Protein','Post-workout recovery'],['Creatine 5g','Strength & power'],
+               ['Omega-3','Joint & heart health'],['Vitamin D3','Immunity & hormones']].map(([n,d]) =>
+              `<div class="supp-item"><div class="supp-name">${n}</div><div class="supp-desc">${d}</div></div>`).join('')}
+          </div>
+        </div>
+      </div>
+    `;
+
+    return macroHTML + routineHTML + suppHTML;
+  }
+</script>
+</body>
+</html>

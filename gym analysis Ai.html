@@ -1,1582 +1,1284 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Gym AI — Your Custom Fitness Blueprint</title>
-  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet"/>
-  <style>
-    /* ── DESIGN TOKENS ── */
-    :root {
-      --black:   #0D0D0D;
-      --white:   #FFFFFF;
-      --ember:   #FF5C1A;   /* primary accent — fire/energy */
-      --ember-dim: rgba(255,92,26,0.12);
-      --ember-glow: rgba(255,92,26,0.25);
-      --coal:    #1A1A1A;
-      --ash:     #2A2A2A;
-      --smoke:   #3D3D3D;
-      --mist:    #7A7A7A;
-      --haze:    #AFAFAF;
-      --fog:     #DEDEDE;
-      --surface: #F6F6F4;
-      --card-bg: #FFFFFF;
-      --border:  #E8E8E4;
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>GymAI — Your Personal Transformation Blueprint</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet"/>
+<style>
+/* ============================================================
+   DESIGN TOKENS — Dark-first fitness aesthetic
+   Palette: deep navy base, electric violet accent, neon mint CTA
+   Type: Space Grotesk (display) + Inter (body)
+   Signature: animated gradient ring progress indicators
+============================================================ */
+:root {
+  --bg-0: #07080f;
+  --bg-1: #0d0f1e;
+  --bg-2: #131629;
+  --bg-card: rgba(255,255,255,0.04);
+  --bg-card-hover: rgba(255,255,255,0.07);
+  --border: rgba(255,255,255,0.08);
+  --border-glow: rgba(120,80,255,0.35);
 
-      --font-body:    'DM Sans', sans-serif;
-      --font-mono:    'DM Mono', monospace;
+  --violet: #7c4dff;
+  --violet-light: #9f77ff;
+  --mint: #00e5a0;
+  --mint-dark: #00b87d;
+  --amber: #ffb547;
+  --rose: #ff5f7e;
+  --sky: #38c0ff;
 
-      --r-sm: 10px;
-      --r-md: 16px;
-      --r-lg: 22px;
-      --r-xl: 28px;
-    }
+  --text-0: #ffffff;
+  --text-1: rgba(255,255,255,0.80);
+  --text-2: rgba(255,255,255,0.50);
+  --text-3: rgba(255,255,255,0.30);
 
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  --radius-s: 8px;
+  --radius-m: 14px;
+  --radius-l: 20px;
+  --radius-xl: 28px;
 
-    body {
-      font-family: var(--font-body);
-      background: var(--surface);
-      color: var(--black);
-      min-height: 100vh;
-      -webkit-font-smoothing: antialiased;
-      overflow-x: hidden;
-    }
+  --shadow-card: 0 4px 32px rgba(0,0,0,0.45);
+  --shadow-glow: 0 0 40px rgba(124,77,255,0.25);
 
-    /* ── TYPOGRAPHY ── */
-    .t-hero {
-      font-size: clamp(32px, 8vw, 48px);
-      font-weight: 700;
-      line-height: 1.08;
-      letter-spacing: -0.03em;
-    }
-    .t-title {
-      font-size: 22px;
-      font-weight: 700;
-      letter-spacing: -0.02em;
-      line-height: 1.2;
-    }
-    .t-heading {
-      font-size: 17px;
-      font-weight: 600;
-      letter-spacing: -0.01em;
-    }
-    .t-body { font-size: 14px; line-height: 1.6; }
-    .t-small { font-size: 12px; line-height: 1.5; }
-    .t-micro { font-size: 11px; letter-spacing: 0.04em; }
-    .t-mono  { font-family: var(--font-mono); font-size: 13px; }
+  --font-display: 'Space Grotesk', sans-serif;
+  --font-body: 'Inter', sans-serif;
+}
 
-    .text-mist  { color: var(--mist); }
-    .text-haze  { color: var(--haze); }
-    .text-ember { color: var(--ember); }
-    .text-coal  { color: var(--coal); }
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
-    /* ── HERO SECTION ── */
-    .hero {
-      background: var(--black);
-      color: var(--white);
-      position: relative;
-      overflow: hidden;
-      padding: 52px 24px 44px;
-    }
+html { scroll-behavior: smooth; }
 
-    /* Animated fire texture behind hero */
-    .hero::before {
-      content: '';
-      position: absolute;
-      inset: 0;
-      background:
-        radial-gradient(ellipse 60% 50% at 80% 20%, rgba(255,92,26,0.18) 0%, transparent 70%),
-        radial-gradient(ellipse 40% 40% at 20% 80%, rgba(255,140,50,0.10) 0%, transparent 60%);
-      pointer-events: none;
-    }
+body {
+  font-family: var(--font-body);
+  background: var(--bg-0);
+  color: var(--text-0);
+  min-height: 100vh;
+  overflow-x: hidden;
+  font-size: 15px;
+  line-height: 1.6;
+}
 
-    .hero-inner {
-      max-width: 480px;
-      margin: 0 auto;
-      position: relative;
-    }
+/* ── BACKGROUND MESH ── */
+body::before {
+  content: '';
+  position: fixed; inset: 0; z-index: 0;
+  background:
+    radial-gradient(ellipse 60% 40% at 20% 10%, rgba(124,77,255,0.12) 0%, transparent 70%),
+    radial-gradient(ellipse 50% 35% at 80% 80%, rgba(0,229,160,0.07) 0%, transparent 70%);
+  pointer-events: none;
+}
 
-    .hero-eyebrow {
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      font-family: var(--font-mono);
-      font-size: 10px;
-      font-weight: 500;
-      letter-spacing: 0.12em;
-      text-transform: uppercase;
-      color: var(--ember);
-      margin-bottom: 18px;
-    }
-    .hero-eyebrow::before {
-      content: '';
-      display: block;
-      width: 18px;
-      height: 1.5px;
-      background: var(--ember);
-      flex-shrink: 0;
-    }
+/* ── LAYOUT ── */
+#app { position: relative; z-index: 1; max-width: 860px; margin: 0 auto; padding: 0 16px 80px; }
 
-    .hero h1 { color: var(--white); }
-    .hero h1 em {
-      font-style: normal;
-      color: var(--ember);
-    }
+/* ── HERO ── */
+.hero {
+  text-align: center;
+  padding: 60px 0 48px;
+}
+.hero-badge {
+  display: inline-flex; align-items: center; gap: 6px;
+  background: rgba(124,77,255,0.15);
+  border: 1px solid rgba(124,77,255,0.3);
+  color: var(--violet-light);
+  font-size: 12px; font-weight: 600; letter-spacing: .06em; text-transform: uppercase;
+  padding: 5px 14px; border-radius: 100px;
+  margin-bottom: 22px;
+}
+.hero h1 {
+  font-family: var(--font-display);
+  font-size: clamp(2rem, 6vw, 3.4rem);
+  font-weight: 800; line-height: 1.1;
+  background: linear-gradient(135deg, #fff 30%, var(--violet-light) 70%, var(--mint) 100%);
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+  margin-bottom: 16px;
+}
+.hero p { color: var(--text-2); font-size: 1rem; max-width: 480px; margin: 0 auto; }
 
-    .hero-sub {
-      color: var(--haze);
-      font-size: 14px;
-      line-height: 1.65;
-      margin-top: 14px;
-      max-width: 320px;
-    }
+/* ── SECTION LABELS ── */
+.section-label {
+  font-size: 11px; font-weight: 700; letter-spacing: .1em; text-transform: uppercase;
+  color: var(--violet-light); margin-bottom: 6px;
+}
 
-    /* Stat pills row */
-    .stat-row {
-      display: flex;
-      gap: 10px;
-      margin-top: 28px;
-      flex-wrap: wrap;
-    }
-    .stat-pill {
-      background: var(--ash);
-      border: 1px solid var(--smoke);
-      border-radius: 999px;
-      padding: 7px 14px;
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-    }
-    .stat-pill .pill-num {
-      font-family: var(--font-mono);
-      font-size: 13px;
-      font-weight: 500;
-      color: var(--white);
-    }
-    .stat-pill .pill-lbl {
-      font-size: 11px;
-      color: var(--mist);
-    }
+/* ── GLASS CARD ── */
+.card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-l);
+  padding: 28px;
+  backdrop-filter: blur(12px);
+  box-shadow: var(--shadow-card);
+  transition: border-color .25s, background .25s;
+}
+.card:hover { background: var(--bg-card-hover); border-color: rgba(255,255,255,0.12); }
+.card + .card, .card + .section, .section + .section { margin-top: 20px; }
 
-    /* ── STEP TRACK ── */
-    .step-track {
-      max-width: 480px;
-      margin: 0 auto;
-      padding: 28px 20px 8px;
-    }
+.section { margin-top: 32px; }
 
-    .track-header {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      margin-bottom: 16px;
-    }
-    .track-label {
-      font-family: var(--font-mono);
-      font-size: 10px;
-      font-weight: 500;
-      letter-spacing: 0.1em;
-      text-transform: uppercase;
-      color: var(--mist);
-    }
-    .track-progress {
-      font-family: var(--font-mono);
-      font-size: 10px;
-      color: var(--ember);
-    }
+.card-title {
+  font-family: var(--font-display);
+  font-size: 1.15rem; font-weight: 700;
+  display: flex; align-items: center; gap: 10px;
+  margin-bottom: 22px;
+}
+.card-title .icon {
+  width: 36px; height: 36px; border-radius: 10px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 18px; flex-shrink: 0;
+}
+.icon-violet { background: rgba(124,77,255,0.2); }
+.icon-mint   { background: rgba(0,229,160,0.15); }
+.icon-amber  { background: rgba(255,181,71,0.15); }
+.icon-rose   { background: rgba(255,95,126,0.15); }
+.icon-sky    { background: rgba(56,192,255,0.15); }
 
-    /* Progress bar */
-    .progress-rail {
-      height: 2px;
-      background: var(--border);
-      border-radius: 999px;
-      margin-bottom: 20px;
-      overflow: hidden;
-    }
-    .progress-fill {
-      height: 100%;
-      background: var(--ember);
-      border-radius: 999px;
-      transition: width 0.5s cubic-bezier(0.4,0,0.2,1);
-      width: 0%;
-    }
+/* ── FORM ELEMENTS ── */
+.field-group { display: grid; gap: 14px; }
+.field-row   { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+@media(max-width:520px){ .field-row { grid-template-columns: 1fr; } }
 
-    /* ── STEP CARD ── */
-    .step-card {
-      background: var(--card-bg);
-      border: 1.5px solid var(--border);
-      border-radius: var(--r-lg);
-      padding: 20px 20px 18px;
-      cursor: pointer;
-      transition: border-color 0.2s, box-shadow 0.2s, transform 0.15s;
-      margin-bottom: 10px;
-      position: relative;
-      overflow: hidden;
-    }
-    .step-card::after {
-      content: '';
-      position: absolute;
-      top: 0; left: 0; right: 0;
-      height: 2px;
-      background: var(--ember);
-      transform: scaleX(0);
-      transform-origin: left;
-      transition: transform 0.3s cubic-bezier(0.4,0,0.2,1);
-    }
-    .step-card:hover {
-      border-color: rgba(255,92,26,0.35);
-      box-shadow: 0 4px 20px rgba(255,92,26,0.08);
-      transform: translateY(-1px);
-    }
-    .step-card.completed {
-      border-color: rgba(255,92,26,0.3);
-      background: linear-gradient(145deg, #FFFBF9 0%, #FFF5F0 100%);
-    }
-    .step-card.completed::after { transform: scaleX(1); }
+label { font-size: 12px; font-weight: 600; color: var(--text-2); letter-spacing: .04em; text-transform: uppercase; display: block; margin-bottom: 6px; }
 
-    .step-row {
-      display: flex;
-      align-items: flex-start;
-      gap: 14px;
-    }
-    .step-icon-wrap {
-      width: 40px;
-      height: 40px;
-      border-radius: var(--r-sm);
-      background: var(--surface);
-      border: 1.5px solid var(--border);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 18px;
-      flex-shrink: 0;
-      transition: background 0.2s, border-color 0.2s;
-    }
-    .step-card.completed .step-icon-wrap {
-      background: var(--ember-dim);
-      border-color: rgba(255,92,26,0.3);
-    }
-    .step-meta { flex: 1; min-width: 0; }
-    .step-num-tag {
-      font-family: var(--font-mono);
-      font-size: 9px;
-      font-weight: 500;
-      letter-spacing: 0.12em;
-      text-transform: uppercase;
-      color: var(--haze);
-      margin-bottom: 2px;
-    }
-    .step-card.completed .step-num-tag { color: var(--ember); }
-    .step-title {
-      font-size: 15px;
-      font-weight: 600;
-      letter-spacing: -0.01em;
-      color: var(--black);
-      margin-bottom: 3px;
-    }
-    .step-desc {
-      font-size: 12px;
-      color: var(--mist);
-      line-height: 1.5;
-    }
-    .step-card.completed .step-desc { color: var(--coal); font-weight: 500; }
+input[type=number], input[type=text], input[type=tel], select {
+  width: 100%;
+  background: rgba(255,255,255,0.05);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-s);
+  color: var(--text-0);
+  font-family: var(--font-body); font-size: 15px;
+  padding: 11px 14px;
+  outline: none;
+  transition: border-color .2s, background .2s;
+  -webkit-appearance: none;
+}
+input:focus, select:focus {
+  border-color: var(--violet);
+  background: rgba(124,77,255,0.08);
+}
+select option { background: #1a1d35; }
 
-    .step-arrow {
-      color: var(--fog);
-      font-size: 16px;
-      flex-shrink: 0;
-      margin-top: 2px;
-      transition: color 0.2s, transform 0.2s;
-    }
-    .step-card:hover .step-arrow {
-      color: var(--ember);
-      transform: translateX(2px);
-    }
-    .step-card.completed .step-arrow {
-      color: var(--ember);
-    }
+/* ── BUTTON ── */
+.btn {
+  display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+  font-family: var(--font-display); font-size: 15px; font-weight: 700;
+  padding: 14px 28px; border-radius: var(--radius-m);
+  border: none; cursor: pointer; transition: all .2s; width: 100%;
+}
+.btn-primary {
+  background: linear-gradient(135deg, var(--violet) 0%, #a066ff 100%);
+  color: #fff;
+  box-shadow: 0 4px 20px rgba(124,77,255,0.4);
+}
+.btn-primary:hover { transform: translateY(-2px); box-shadow: 0 8px 28px rgba(124,77,255,0.55); }
+.btn-primary:active { transform: translateY(0); }
+.btn-mint {
+  background: linear-gradient(135deg, var(--mint-dark) 0%, var(--mint) 100%);
+  color: #001a11;
+  box-shadow: 0 4px 20px rgba(0,229,160,0.35);
+}
+.btn-mint:hover { transform: translateY(-2px); box-shadow: 0 8px 28px rgba(0,229,160,0.5); }
+.btn-outline {
+  background: transparent; border: 1px solid var(--border); color: var(--text-1);
+}
+.btn-outline:hover { border-color: var(--violet); color: var(--violet-light); }
 
-    /* ── CTA SECTION ── */
-    .cta-wrap {
-      max-width: 480px;
-      margin: 0 auto;
-      padding: 10px 20px 32px;
-    }
+/* ── SEGMENT CONTROL ── */
+.segment { display: flex; gap: 8px; flex-wrap: wrap; }
+.seg-btn {
+  flex: 1; min-width: 80px;
+  background: rgba(255,255,255,0.04); border: 1px solid var(--border);
+  border-radius: var(--radius-s); color: var(--text-2);
+  font-family: var(--font-body); font-size: 13px; font-weight: 600;
+  padding: 9px 12px; cursor: pointer; transition: all .2s; text-align: center;
+}
+.seg-btn.active, .seg-btn:hover {
+  background: rgba(124,77,255,0.2); border-color: var(--violet);
+  color: var(--violet-light);
+}
 
-    .btn-primary {
-      width: 100%;
-      background: var(--ember);
-      color: var(--white);
-      font-family: var(--font-body);
-      font-size: 15px;
-      font-weight: 600;
-      letter-spacing: -0.01em;
-      padding: 16px 24px;
-      border-radius: var(--r-md);
-      border: none;
-      cursor: pointer;
-      transition: background 0.18s, transform 0.12s, box-shadow 0.18s, opacity 0.18s;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 8px;
-    }
-    .btn-primary:hover:not(:disabled) {
-      background: #E84A0A;
-      box-shadow: 0 8px 28px rgba(255,92,26,0.35);
-      transform: translateY(-1px);
-    }
-    .btn-primary:active { transform: translateY(0); }
-    .btn-primary:disabled {
-      background: var(--fog);
-      color: var(--haze);
-      cursor: not-allowed;
-      box-shadow: none;
-    }
+/* ── PROGRESS BAR ── */
+.progress-track {
+  height: 6px; background: rgba(255,255,255,0.08);
+  border-radius: 100px; overflow: hidden;
+}
+.progress-fill {
+  height: 100%; border-radius: 100px;
+  background: linear-gradient(90deg, var(--violet) 0%, var(--mint) 100%);
+  transition: width 1.2s cubic-bezier(.22,1,.36,1);
+}
 
-    .trust-strip {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 16px;
-      margin-top: 12px;
-    }
-    .trust-item {
-      font-size: 11px;
-      color: var(--haze);
-      display: flex;
-      align-items: center;
-      gap: 4px;
-    }
-    .trust-dot {
-      width: 2px; height: 2px;
-      border-radius: 50%;
-      background: var(--fog);
-    }
+/* ── RING PROGRESS (SVG) ── */
+.ring-wrap { position: relative; display: inline-flex; align-items: center; justify-content: center; }
+.ring-label { position: absolute; text-align: center; }
+.ring-value { font-family: var(--font-display); font-size: 1.5rem; font-weight: 800; display: block; }
+.ring-sub   { font-size: 10px; color: var(--text-2); font-weight: 600; letter-spacing: .06em; text-transform: uppercase; }
 
-    /* ── MODAL ── */
-    .modal-overlay {
-      position: fixed; inset: 0;
-      background: rgba(13,13,13,0.65);
-      backdrop-filter: blur(10px);
-      -webkit-backdrop-filter: blur(10px);
-      z-index: 200;
-      display: flex;
-      align-items: flex-end;
-      justify-content: center;
-      padding: 0;
-      opacity: 0;
-      pointer-events: none;
-      transition: opacity 0.25s;
-    }
-    .modal-overlay.active {
-      opacity: 1;
-      pointer-events: all;
-    }
+/* ── STAT PILL ── */
+.stat-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; }
+@media(min-width:600px){ .stat-grid { grid-template-columns: repeat(4, 1fr); } }
+.stat-pill {
+  background: rgba(255,255,255,0.04); border: 1px solid var(--border);
+  border-radius: var(--radius-m); padding: 16px;
+  text-align: center;
+}
+.stat-pill .val {
+  font-family: var(--font-display); font-size: 1.5rem; font-weight: 800;
+  background: linear-gradient(135deg, #fff 0%, var(--violet-light) 100%);
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+  display: block;
+}
+.stat-pill .lbl { font-size: 11px; color: var(--text-2); font-weight: 600; letter-spacing: .05em; text-transform: uppercase; margin-top: 2px; }
 
-    .modal-sheet {
-      background: var(--white);
-      width: 100%;
-      max-width: 500px;
-      max-height: 92vh;
-      overflow-y: auto;
-      border-radius: var(--r-xl) var(--r-xl) 0 0;
-      transform: translateY(30px);
-      transition: transform 0.32s cubic-bezier(0.34,1.1,0.64,1);
-      box-shadow: 0 -8px 48px rgba(0,0,0,0.18);
-      padding-bottom: env(safe-area-inset-bottom, 20px);
-    }
-    .modal-overlay.active .modal-sheet {
-      transform: translateY(0);
-    }
+/* ── BMI DIAL ── */
+.bmi-dial-wrap { display: flex; flex-direction: column; align-items: center; margin: 8px 0 16px; }
+.bmi-categories { display: flex; gap: 8px; flex-wrap: wrap; justify-content: center; margin-top: 12px; }
+.bmi-cat {
+  font-size: 11px; font-weight: 600; padding: 4px 12px; border-radius: 100px;
+  border: 1px solid transparent;
+}
+.bmi-cat.active { border-color: currentColor; }
+.bmi-underweight { color: #38c0ff; }
+.bmi-healthy     { color: var(--mint); }
+.bmi-overweight  { color: var(--amber); }
+.bmi-obese       { color: var(--rose); }
 
-    .modal-drag {
-      width: 36px; height: 4px;
-      background: var(--border);
-      border-radius: 999px;
-      margin: 14px auto 0;
-    }
+/* ── AI COACH SCORES ── */
+.score-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; }
+@media(min-width:600px){ .score-grid { grid-template-columns: repeat(4, 1fr); } }
+.score-item { text-align: center; }
+.score-num {
+  font-family: var(--font-display); font-size: 2rem; font-weight: 800;
+  display: block;
+}
+.score-lbl { font-size: 11px; color: var(--text-2); font-weight: 600; text-transform: uppercase; letter-spacing: .05em; }
+.coach-advice {
+  background: linear-gradient(135deg, rgba(124,77,255,0.12) 0%, rgba(0,229,160,0.06) 100%);
+  border: 1px solid rgba(124,77,255,0.2);
+  border-radius: var(--radius-m); padding: 18px 20px; margin-top: 18px;
+  font-size: 14px; line-height: 1.65; color: var(--text-1);
+}
+.coach-advice strong { color: var(--mint); }
 
-    .modal-head {
-      padding: 20px 22px 0;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-    }
-    .modal-step-tag {
-      font-family: var(--font-mono);
-      font-size: 10px;
-      font-weight: 500;
-      letter-spacing: 0.12em;
-      text-transform: uppercase;
-      color: var(--ember);
-      background: var(--ember-dim);
-      padding: 4px 10px;
-      border-radius: 999px;
-    }
-    .btn-close {
-      width: 30px; height: 30px;
-      border-radius: 50%;
-      background: var(--surface);
-      border: 1.5px solid var(--border);
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 13px;
-      color: var(--mist);
-      transition: all 0.15s;
-    }
-    .btn-close:hover {
-      background: var(--border);
-      color: var(--black);
-    }
+/* ── TRANSFORMATION TIMELINE ── */
+.timeline { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; }
+@media(max-width:540px){ .timeline { grid-template-columns: repeat(2, 1fr); } }
+.tl-card {
+  background: var(--bg-card); border: 1px solid var(--border);
+  border-radius: var(--radius-m); padding: 18px 14px; text-align: center;
+  position: relative; overflow: hidden; transition: border-color .2s;
+}
+.tl-card::before {
+  content: ''; position: absolute; inset: 0;
+  background: linear-gradient(135deg, rgba(124,77,255,0.05) 0%, transparent 60%);
+}
+.tl-card:first-child { border-color: var(--violet); }
+.tl-day { font-size: 11px; font-weight: 700; color: var(--text-2); text-transform: uppercase; letter-spacing: .06em; margin-bottom: 8px; }
+.tl-weight { font-family: var(--font-display); font-size: 1.6rem; font-weight: 800; }
+.tl-change { font-size: 12px; margin-top: 4px; }
+.tl-note { font-size: 10px; color: var(--text-3); margin-top: 6px; }
 
-    .modal-body { padding: 18px 22px 22px; }
+/* ── BADGES ── */
+.badge-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
+@media(min-width:600px){ .badge-grid { grid-template-columns: repeat(6, 1fr); } }
+.badge-item {
+  background: var(--bg-card); border: 1px solid var(--border);
+  border-radius: var(--radius-m); padding: 16px 10px; text-align: center;
+  transition: all .2s; cursor: default;
+}
+.badge-item.earned {
+  border-color: var(--violet);
+  background: rgba(124,77,255,0.1);
+  box-shadow: 0 0 20px rgba(124,77,255,0.15);
+}
+.badge-item.earned:hover { transform: translateY(-3px); box-shadow: 0 6px 24px rgba(124,77,255,0.25); }
+.badge-icon { font-size: 2rem; display: block; margin-bottom: 6px; }
+.badge-name { font-size: 10px; font-weight: 700; color: var(--text-2); text-transform: uppercase; letter-spacing: .04em; }
+.badge-item.earned .badge-name { color: var(--violet-light); }
 
-    .modal-title {
-      font-size: 22px;
-      font-weight: 700;
-      letter-spacing: -0.02em;
-      line-height: 1.2;
-      margin-bottom: 6px;
-    }
-    .modal-sub {
-      font-size: 13px;
-      color: var(--mist);
-      line-height: 1.55;
-      margin-bottom: 22px;
-    }
+/* ── WORKOUT CHECKLIST ── */
+.workout-progress-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; }
+.workout-count { font-family: var(--font-display); font-size: 1.1rem; font-weight: 700; }
+.checklist { display: flex; flex-direction: column; gap: 8px; }
+.check-item {
+  display: flex; align-items: center; gap: 12px;
+  background: rgba(255,255,255,0.03); border: 1px solid var(--border);
+  border-radius: var(--radius-s); padding: 12px 14px; cursor: pointer;
+  transition: all .2s; user-select: none;
+}
+.check-item:hover { background: rgba(255,255,255,0.06); }
+.check-item.done {
+  background: rgba(0,229,160,0.07);
+  border-color: rgba(0,229,160,0.25);
+}
+.check-box {
+  width: 22px; height: 22px; border-radius: 6px; flex-shrink: 0;
+  border: 2px solid var(--border);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 13px; transition: all .2s;
+  background: rgba(255,255,255,0.04);
+}
+.check-item.done .check-box {
+  background: var(--mint); border-color: var(--mint); color: #001a11;
+}
+.check-label { font-size: 14px; font-weight: 500; flex: 1; }
+.check-item.done .check-label { text-decoration: line-through; color: var(--text-2); }
+.check-sets { font-size: 12px; color: var(--text-3); flex-shrink: 0; }
+.check-item.done .check-sets { color: var(--mint); }
 
-    /* ── FORM ELEMENTS ── */
-    .field-group { margin-bottom: 16px; }
-    .field-label {
-      display: block;
-      font-size: 11px;
-      font-weight: 600;
-      text-transform: uppercase;
-      letter-spacing: 0.07em;
-      color: var(--mist);
-      margin-bottom: 7px;
-    }
-    .field-input {
-      width: 100%;
-      background: var(--surface);
-      border: 1.5px solid var(--border);
-      border-radius: var(--r-sm);
-      padding: 12px 14px;
-      font-size: 15px;
-      font-family: var(--font-body);
-      color: var(--black);
-      outline: none;
-      transition: border-color 0.18s, box-shadow 0.18s, background 0.18s;
-      -webkit-appearance: none;
-    }
-    .field-input:focus {
-      border-color: var(--ember);
-      background: var(--white);
-      box-shadow: 0 0 0 3px var(--ember-dim);
-    }
-    .field-input::placeholder { color: var(--haze); }
+/* ── STREAK TRACKER ── */
+.streak-header { display: flex; align-items: center; gap: 12px; margin-bottom: 20px; }
+.streak-fire { font-size: 2.5rem; }
+.streak-count { font-family: var(--font-display); font-size: 2.2rem; font-weight: 800; color: var(--amber); }
+.streak-label { font-size: 13px; color: var(--text-2); }
+.week-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 6px; }
+.day-item { text-align: center; }
+.day-circle {
+  width: 40px; height: 40px; border-radius: 50%; border: 2px solid var(--border);
+  display: flex; align-items: center; justify-content: center; margin: 0 auto 5px;
+  font-size: 14px; cursor: pointer; transition: all .2s;
+}
+@media(max-width:400px){ .day-circle { width: 34px; height: 34px; font-size: 12px; } }
+.day-circle.done  { background: rgba(255,181,71,0.2); border-color: var(--amber); }
+.day-circle.today { border-color: var(--violet); }
+.day-name { font-size: 10px; color: var(--text-3); font-weight: 600; text-transform: uppercase; }
+.streak-message { margin-top: 16px; font-size: 13px; color: var(--mint); text-align: center; font-weight: 600; }
 
-    .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+/* ── LEADERBOARD ── */
+.lb-list { display: flex; flex-direction: column; gap: 10px; }
+.lb-item {
+  display: flex; align-items: center; gap: 14px;
+  background: var(--bg-card); border: 1px solid var(--border);
+  border-radius: var(--radius-m); padding: 14px 16px;
+  transition: background .2s;
+}
+.lb-item:hover { background: var(--bg-card-hover); }
+.lb-rank { font-family: var(--font-display); font-size: 1.2rem; font-weight: 800; width: 28px; text-align: center; flex-shrink: 0; }
+.lb-avatar {
+  width: 38px; height: 38px; border-radius: 50%; flex-shrink: 0;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 16px; font-weight: 700; color: #fff;
+}
+.lb-info { flex: 1; }
+.lb-name { font-weight: 700; font-size: 14px; }
+.lb-detail { font-size: 12px; color: var(--text-2); margin-top: 2px; }
+.lb-streak { font-family: var(--font-display); font-weight: 800; font-size: 1.1rem; color: var(--amber); flex-shrink: 0; }
+.lb-streak small { font-size: 10px; color: var(--text-3); font-weight: 400; display: block; text-align: center; }
 
-    /* Phone field */
-    .phone-wrap { display: flex; }
-    .phone-flag {
-      background: var(--surface);
-      border: 1.5px solid var(--border);
-      border-right: none;
-      border-radius: var(--r-sm) 0 0 var(--r-sm);
-      padding: 12px 12px;
-      font-size: 14px;
-      color: var(--mist);
-      white-space: nowrap;
-      display: flex;
-      align-items: center;
-      gap: 5px;
-    }
-    .phone-wrap .field-input {
-      border-radius: 0 var(--r-sm) var(--r-sm) 0;
-      border-left: none;
-    }
-    .phone-wrap .field-input:focus { z-index: 1; position: relative; }
+/* ── PROGRAM CARD ── */
+.program-card {
+  border-radius: var(--radius-l); padding: 24px;
+  position: relative; overflow: hidden;
+}
+.program-card::before {
+  content: ''; position: absolute; inset: 0; opacity: .08;
+  background: radial-gradient(ellipse at top right, var(--violet), transparent);
+}
+.program-tag {
+  display: inline-block; font-size: 10px; font-weight: 700; letter-spacing: .08em;
+  text-transform: uppercase; padding: 3px 10px; border-radius: 100px; margin-bottom: 10px;
+  background: rgba(255,255,255,0.1);
+}
+.program-title { font-family: var(--font-display); font-size: 1.35rem; font-weight: 800; margin-bottom: 6px; }
+.program-reason { font-size: 13px; color: var(--text-2); line-height: 1.5; }
+.program-meta { display: flex; gap: 16px; margin-top: 14px; }
+.pm { font-size: 12px; color: var(--text-2); display: flex; align-items: center; gap: 5px; }
+.pm-icon { font-size: 14px; }
 
-    .error-msg {
-      font-size: 12px;
-      color: #D64545;
-      text-align: center;
-      margin-top: 8px;
-      display: none;
-    }
+/* ── NUTRITION TARGETS ── */
+.macro-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-top: 12px; }
+.macro-card {
+  border-radius: var(--radius-m); padding: 16px;
+  text-align: center; border: 1px solid var(--border);
+  background: var(--bg-card);
+}
+.macro-grams { font-family: var(--font-display); font-size: 1.6rem; font-weight: 800; }
+.macro-name  { font-size: 11px; text-transform: uppercase; font-weight: 700; letter-spacing: .05em; margin-top: 3px; }
+.macro-cal   { font-size: 11px; color: var(--text-3); margin-top: 2px; }
 
-    /* ── GOAL SELECTOR ── */
-    .goal-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 10px; margin-bottom: 22px; }
-    .goal-card {
-      border: 1.5px solid var(--border);
-      border-radius: var(--r-md);
-      padding: 16px 10px 14px;
-      cursor: pointer;
-      text-align: center;
-      background: var(--white);
-      transition: all 0.18s;
-    }
-    .goal-card:hover {
-      border-color: rgba(255,92,26,0.4);
-      background: var(--ember-dim);
-    }
-    .goal-card.selected {
-      border-color: var(--ember);
-      background: var(--ember-dim);
-      box-shadow: 0 0 0 3px var(--ember-glow);
-    }
-    .goal-emoji { font-size: 28px; display: block; margin-bottom: 8px; }
-    .goal-name {
-      font-size: 13px;
-      font-weight: 600;
-      color: var(--black);
-      line-height: 1.2;
-      margin-bottom: 3px;
-    }
-    .goal-hint { font-size: 11px; color: var(--mist); }
+/* ── LEAD GATE (MODAL) ── */
+.gate-overlay {
+  position: fixed; inset: 0; z-index: 9999;
+  background: rgba(7,8,15,0.92); backdrop-filter: blur(14px);
+  display: flex; align-items: center; justify-content: center; padding: 20px;
+}
+.gate-overlay.hidden { display: none; }
+.gate-modal {
+  background: var(--bg-2); border: 1px solid var(--border-glow);
+  border-radius: var(--radius-xl); padding: 36px;
+  max-width: 440px; width: 100%;
+  box-shadow: 0 8px 48px rgba(124,77,255,0.3);
+  animation: slideUp .4s cubic-bezier(.22,1,.36,1);
+}
+@keyframes slideUp { from { transform: translateY(30px); opacity: 0; } }
+.gate-badge {
+  width: 56px; height: 56px; background: rgba(124,77,255,0.2); border-radius: 16px;
+  display: flex; align-items: center; justify-content: center; font-size: 28px;
+  margin: 0 auto 20px;
+}
+.gate-modal h2 {
+  font-family: var(--font-display); font-size: 1.4rem; font-weight: 800;
+  text-align: center; margin-bottom: 8px;
+}
+.gate-modal p { color: var(--text-2); text-align: center; font-size: 14px; margin-bottom: 20px; }
+.gate-includes { display: flex; flex-direction: column; gap: 8px; margin-bottom: 24px; }
+.gate-row { display: flex; align-items: center; gap: 10px; font-size: 14px; }
+.gate-check { color: var(--mint); font-size: 16px; }
+.gate-input-wrap { display: flex; flex-direction: column; gap: 10px; margin-bottom: 16px; }
+.gate-note { font-size: 11px; color: var(--text-3); text-align: center; }
 
-    /* ── ACTIVITY SELECTOR ── */
-    .activity-list { display: flex; flex-direction: column; gap: 8px; margin-bottom: 22px; }
-    .activity-item {
-      border: 1.5px solid var(--border);
-      border-radius: var(--r-md);
-      padding: 14px 16px;
-      cursor: pointer;
-      background: var(--white);
-      display: flex;
-      align-items: center;
-      gap: 14px;
-      transition: all 0.18s;
-    }
-    .activity-item:hover {
-      border-color: rgba(255,92,26,0.4);
-      background: #FFFAF8;
-    }
-    .activity-item.selected {
-      border-color: var(--ember);
-      background: var(--ember-dim);
-    }
-    .activity-emoji {
-      font-size: 22px;
-      width: 36px;
-      text-align: center;
-      flex-shrink: 0;
-    }
-    .activity-name { font-size: 14px; font-weight: 600; color: var(--black); }
-    .activity-desc { font-size: 12px; color: var(--mist); }
+/* ── RESULTS SECTION ── */
+#results-section { display: none; }
+#results-section.visible { display: block; animation: fadeIn .5s ease; }
+@keyframes fadeIn { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: translateY(0); } }
 
-    /* ── RESULTS SECTION ── */
-    #results-section { display: none; }
-    #results-section.visible { display: block; }
+/* ── DIVIDER ── */
+.divider { height: 1px; background: var(--border); margin: 32px 0; }
 
-    .results-wrap {
-      max-width: 480px;
-      margin: 0 auto;
-      padding: 0 20px 48px;
-    }
+/* ── UTILITIES ── */
+.text-center { text-align: center; }
+.text-violet { color: var(--violet-light); }
+.text-mint   { color: var(--mint); }
+.text-amber  { color: var(--amber); }
+.text-rose   { color: var(--rose); }
+.mt-2 { margin-top: 8px; }
+.mt-3 { margin-top: 12px; }
+.mt-4 { margin-top: 16px; }
+.mb-3 { margin-bottom: 12px; }
+.fw-700 { font-weight: 700; }
+.font-display { font-family: var(--font-display); }
 
-    .results-divider {
-      height: 1px;
-      background: var(--border);
-      margin: 28px 0;
-    }
+/* ── SCROLL REVEAL ── */
+.reveal { opacity: 0; transform: translateY(20px); transition: opacity .55s ease, transform .55s ease; }
+.reveal.in { opacity: 1; transform: translateY(0); }
 
-    .greeting-banner {
-      background: var(--black);
-      color: var(--white);
-      border-radius: var(--r-lg);
-      padding: 20px 20px;
-      margin-bottom: 20px;
-      display: flex;
-      align-items: center;
-      gap: 14px;
-      position: relative;
-      overflow: hidden;
-    }
-    .greeting-banner::before {
-      content: '';
-      position: absolute;
-      inset: 0;
-      background: radial-gradient(ellipse 50% 80% at 100% 50%, rgba(255,92,26,0.25) 0%, transparent 70%);
-      pointer-events: none;
-    }
-    .greeting-icon {
-      width: 44px; height: 44px;
-      background: var(--ember);
-      border-radius: var(--r-sm);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 20px;
-      flex-shrink: 0;
-    }
-    .greeting-name {
-      font-size: 15px;
-      font-weight: 700;
-      color: var(--white);
-    }
-    .greeting-sub {
-      font-size: 12px;
-      color: var(--haze);
-      margin-top: 2px;
-    }
+/* ── INPUT PHONE PREFIX ── */
+.phone-wrap { position: relative; }
+.phone-prefix {
+  position: absolute; left: 12px; top: 50%; transform: translateY(-50%);
+  color: var(--text-2); font-size: 14px; pointer-events: none;
+}
+.phone-wrap input { padding-left: 46px; }
 
-    /* ── CALORIE CARD ── */
-    .calorie-card {
-      background: var(--black);
-      border-radius: var(--r-lg);
-      padding: 24px 20px 20px;
-      margin-bottom: 14px;
-      position: relative;
-      overflow: hidden;
-    }
-    .calorie-card::before {
-      content: '';
-      position: absolute;
-      inset: 0;
-      background:
-        radial-gradient(ellipse 55% 55% at 95% 5%, rgba(255,92,26,0.22) 0%, transparent 65%),
-        radial-gradient(ellipse 35% 35% at 5% 95%, rgba(255,140,50,0.10) 0%, transparent 60%);
-      pointer-events: none;
-    }
-    .cal-label {
-      font-family: var(--font-mono);
-      font-size: 10px;
-      letter-spacing: 0.12em;
-      text-transform: uppercase;
-      color: var(--ember);
-      margin-bottom: 4px;
-    }
-    .cal-plan-name {
-      font-size: 15px;
-      font-weight: 600;
-      color: var(--white);
-      margin-bottom: 2px;
-    }
-    .cal-plan-desc {
-      font-size: 12px;
-      color: var(--mist);
-      margin-bottom: 20px;
-    }
-    .cal-num-row {
-      display: flex;
-      align-items: flex-end;
-      gap: 6px;
-    }
-    .cal-num {
-      font-family: var(--font-mono);
-      font-size: 52px;
-      font-weight: 500;
-      color: var(--white);
-      line-height: 1;
-      letter-spacing: -0.03em;
-    }
-    .cal-unit {
-      font-size: 13px;
-      color: var(--mist);
-      padding-bottom: 8px;
-    }
+/* ── TOOLTIP ── */
+.tip { font-size: 11px; color: var(--text-3); margin-top: 4px; }
 
-    /* ── MACRO GRID ── */
-    .macro-grid {
-      display: grid;
-      grid-template-columns: repeat(3,1fr);
-      gap: 10px;
-      margin-bottom: 14px;
-    }
-    .macro-tile {
-      background: var(--surface);
-      border: 1.5px solid var(--border);
-      border-radius: var(--r-md);
-      padding: 14px 12px;
-      text-align: center;
-    }
-    .macro-val {
-      font-family: var(--font-mono);
-      font-size: 24px;
-      font-weight: 500;
-      color: var(--black);
-      letter-spacing: -0.02em;
-    }
-    .macro-val span { font-size: 14px; font-weight: 400; color: var(--mist); }
-    .macro-name {
-      font-size: 10px;
-      font-weight: 600;
-      text-transform: uppercase;
-      letter-spacing: 0.08em;
-      color: var(--mist);
-      margin-top: 4px;
-    }
-    .macro-pct {
-      font-size: 11px;
-      color: var(--haze);
-      margin-top: 2px;
-    }
-
-    /* Macro bars */
-    .macro-bars { background: var(--white); border: 1.5px solid var(--border); border-radius: var(--r-md); padding: 16px; }
-    .bar-row { margin-bottom: 10px; }
-    .bar-row:last-child { margin-bottom: 0; }
-    .bar-label-row {
-      display: flex;
-      justify-content: space-between;
-      margin-bottom: 5px;
-    }
-    .bar-name { font-size: 12px; font-weight: 600; color: var(--coal); }
-    .bar-pct { font-family: var(--font-mono); font-size: 12px; color: var(--mist); }
-    .bar-track {
-      height: 5px;
-      background: var(--surface);
-      border-radius: 999px;
-      overflow: hidden;
-    }
-    .bar-fill {
-      height: 100%;
-      border-radius: 999px;
-      animation: barGrow 1.2s cubic-bezier(0.4,0,0.2,1) both;
-    }
-
-    /* ── ROUTINE CARD ── */
-    .routine-block {
-      background: var(--white);
-      border: 1.5px solid var(--border);
-      border-radius: var(--r-lg);
-      overflow: hidden;
-      margin-bottom: 12px;
-    }
-    .routine-head {
-      padding: 14px 18px;
-      background: var(--surface);
-      border-bottom: 1px solid var(--border);
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-    }
-    .routine-badge {
-      font-family: var(--font-mono);
-      font-size: 10px;
-      font-weight: 500;
-      letter-spacing: 0.1em;
-      text-transform: uppercase;
-      padding: 3px 10px;
-      border-radius: 999px;
-    }
-    .routine-freq {
-      font-size: 12px;
-      color: var(--mist);
-    }
-    .routine-body { padding: 16px 18px; }
-
-    .day-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; margin-bottom: 14px; }
-    .day-pill {
-      font-size: 12px;
-      font-weight: 500;
-      padding: 8px 10px;
-      border-radius: var(--r-sm);
-      background: var(--surface);
-      color: var(--coal);
-    }
-    .day-pill.rest { color: var(--haze); font-weight: 400; }
-
-    .tip-box {
-      border-radius: var(--r-sm);
-      padding: 12px 14px;
-      font-size: 12px;
-      font-weight: 500;
-      line-height: 1.55;
-    }
-
-    /* Nutrition tips */
-    .tip-list { display: flex; flex-direction: column; gap: 10px; padding: 16px 18px; }
-    .tip-item {
-      display: flex;
-      gap: 10px;
-      align-items: flex-start;
-    }
-    .tip-bullet {
-      width: 18px;
-      height: 18px;
-      border-radius: 50%;
-      background: var(--ember-dim);
-      border: 1.5px solid rgba(255,92,26,0.3);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      flex-shrink: 0;
-      margin-top: 1px;
-    }
-    .tip-bullet svg {
-      width: 8px; height: 8px;
-      stroke: var(--ember);
-      stroke-width: 2.5;
-      fill: none;
-    }
-    .tip-text { font-size: 13px; color: var(--coal); line-height: 1.55; }
-
-    /* ── SUPPLEMENT GRID ── */
-    .supp-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 12px; }
-    .supp-item {
-      background: var(--surface);
-      border-radius: var(--r-sm);
-      padding: 12px 12px;
-    }
-    .supp-name { font-size: 13px; font-weight: 600; color: var(--black); }
-    .supp-desc { font-size: 11px; color: var(--mist); margin-top: 2px; }
-
-    /* ── GYM CTA ── */
-    .gym-cta-block {
-      background: var(--black);
-      border-radius: var(--r-lg);
-      padding: 24px 20px;
-      text-align: center;
-      position: relative;
-      overflow: hidden;
-    }
-    .gym-cta-block::before {
-      content: '';
-      position: absolute;
-      inset: 0;
-      background: radial-gradient(ellipse 60% 50% at 50% 0%, rgba(255,92,26,0.2) 0%, transparent 70%);
-      pointer-events: none;
-    }
-    .gym-cta-block h3 { color: var(--white); font-size: 19px; letter-spacing: -0.02em; margin-bottom: 8px; }
-    .gym-cta-block p { color: var(--haze); font-size: 13px; margin-bottom: 20px; }
-
-    .btn-outline-white {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      gap: 8px;
-      width: 100%;
-      background: transparent;
-      border: 1.5px solid rgba(255,255,255,0.2);
-      color: var(--white);
-      font-family: var(--font-body);
-      font-size: 14px;
-      font-weight: 600;
-      padding: 14px 24px;
-      border-radius: var(--r-md);
-      cursor: pointer;
-      transition: all 0.18s;
-    }
-    .btn-outline-white:hover {
-      background: rgba(255,255,255,0.08);
-      border-color: rgba(255,255,255,0.4);
-    }
-
-    /* ── SUCCESS STATE ── */
-    .success-wrap { text-align: center; padding: 8px 0 4px; }
-    .success-ring {
-      width: 64px; height: 64px;
-      border-radius: 50%;
-      background: var(--ember-dim);
-      border: 2px solid rgba(255,92,26,0.3);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 28px;
-      margin: 0 auto 16px;
-    }
-
-    /* ── ANIMATIONS ── */
-    @keyframes slideUp {
-      from { opacity: 0; transform: translateY(16px); }
-      to   { opacity: 1; transform: translateY(0); }
-    }
-    .slide-up { animation: slideUp 0.4s cubic-bezier(0.4,0,0.2,1) both; }
-    .d1 { animation-delay: 0.07s; }
-    .d2 { animation-delay: 0.14s; }
-    .d3 { animation-delay: 0.21s; }
-
-    @keyframes barGrow {
-      from { width: 0 !important; }
-    }
-    .bar-grow { animation: barGrow 1.2s cubic-bezier(0.4,0,0.2,1) both; }
-
-    @keyframes fadeIn {
-      from { opacity: 0; } to { opacity: 1; }
-    }
-
-    /* ── SCROLLBAR ── */
-    ::-webkit-scrollbar { width: 4px; }
-    ::-webkit-scrollbar-track { background: transparent; }
-    ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 999px; }
-
-    @media (prefers-reduced-motion: reduce) {
-      *, *::before, *::after { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
-    }
-  </style>
+/* loading spinner */
+.spinner { display: inline-block; width: 18px; height: 18px; border: 2px solid rgba(255,255,255,.2); border-top-color: #fff; border-radius: 50%; animation: spin .6s linear infinite; }
+@keyframes spin { to { transform: rotate(360deg); } }
+</style>
 </head>
 <body>
 
-<!-- ════════════════════════════════ HERO ════════════════════════════════ -->
-<section class="hero">
-  <div class="hero-inner">
-    <div class="hero-eyebrow">AI-Powered · Free Blueprint</div>
-    <h1 class="t-hero">Your gym plan,<br/><em>built in 60 seconds.</em></h1>
-    <p class="hero-sub">Answer 3 questions. Get a science-backed calorie target, macro split, and training routine — free.</p>
-    <div class="stat-row">
-      <div class="stat-pill">
-        <span class="pill-num">Mifflin-St&nbsp;Jeor</span>
-        <span class="pill-lbl">formula</span>
-      </div>
-      <div class="stat-pill">
-        <span class="pill-num">100%</span>
-        <span class="pill-lbl">free</span>
-      </div>
-      <div class="stat-pill">
-        <span class="pill-num">via WhatsApp</span>
-      </div>
+<!-- ══════════════════════════════════════════
+     LEAD GATE MODAL — shown before results
+══════════════════════════════════════════ -->
+<div class="gate-overlay hidden" id="gateOverlay">
+  <div class="gate-modal">
+    <div class="gate-badge">🎁</div>
+    <h2>Your Blueprint Is Ready!</h2>
+    <p>Enter your details to unlock your complete personalised transformation report.</p>
+    <div class="gate-includes">
+      <div class="gate-row"><span class="gate-check">✅</span> BMI Analysis + AI Score</div>
+      <div class="gate-row"><span class="gate-check">✅</span> AI Coach Report & Personalized Plan</div>
+      <div class="gate-row"><span class="gate-check">✅</span> 90-Day Transformation Forecast</div>
+      <div class="gate-row"><span class="gate-check">✅</span> Full Workout Program</div>
+      <div class="gate-row"><span class="gate-check">✅</span> Nutrition & Macro Targets</div>
     </div>
-  </div>
-</section>
-
-<!-- ════════════════════════════════ STEP TRACK ════════════════════════════════ -->
-<div class="step-track">
-  <div class="track-header">
-    <span class="track-label">Your Blueprint</span>
-    <span class="track-progress" id="progress-label">0 / 3 complete</span>
-  </div>
-  <div class="progress-rail">
-    <div class="progress-fill" id="progress-fill"></div>
-  </div>
-
-  <!-- Step 1 -->
-  <div class="step-card" id="card-stats" onclick="openModal('modal-stats')">
-    <div class="step-row">
-      <div class="step-icon-wrap">📏</div>
-      <div class="step-meta">
-        <div class="step-num-tag">Step 01</div>
-        <div class="step-title">Core Stats</div>
-        <div class="step-desc" id="desc-stats">Age, gender, height & weight</div>
-      </div>
-      <div class="step-arrow">→</div>
-    </div>
-  </div>
-
-  <!-- Step 2 -->
-  <div class="step-card" id="card-goal" onclick="openModal('modal-goal')">
-    <div class="step-row">
-      <div class="step-icon-wrap">🎯</div>
-      <div class="step-meta">
-        <div class="step-num-tag">Step 02</div>
-        <div class="step-title">Fitness Goal</div>
-        <div class="step-desc" id="desc-goal">Lose fat, build muscle, or stay fit</div>
-      </div>
-      <div class="step-arrow">→</div>
-    </div>
-  </div>
-
-  <!-- Step 3 -->
-  <div class="step-card" id="card-activity" onclick="openModal('modal-activity')">
-    <div class="step-row">
-      <div class="step-icon-wrap">⚡</div>
-      <div class="step-meta">
-        <div class="step-num-tag">Step 03</div>
-        <div class="step-title">Activity Level</div>
-        <div class="step-desc" id="desc-activity">How active are you day-to-day?</div>
-      </div>
-      <div class="step-arrow">→</div>
-    </div>
-  </div>
-</div>
-
-<!-- CTA -->
-<div class="cta-wrap">
-  <button class="btn-primary" id="main-cta" onclick="handleGeneratePlan()" disabled>
-    <span>Complete all 3 steps above</span>
-  </button>
-  <div class="trust-strip">
-    <span class="trust-item">🔒 Private</span>
-    <span class="trust-dot"></span>
-    <span class="trust-item">No spam</span>
-    <span class="trust-dot"></span>
-    <span class="trust-item">Free forever</span>
-  </div>
-</div>
-
-<!-- ════════════════════════════════ RESULTS ════════════════════════════════ -->
-<section id="results-section">
-  <div class="results-wrap">
-    <div class="results-divider"></div>
-
-    <div class="greeting-banner slide-up">
-      <div class="greeting-icon">🎯</div>
+    <div class="gate-input-wrap">
       <div>
-        <div class="greeting-name" id="results-name-greeting">Hey there! 👋</div>
-        <div class="greeting-sub">Your personalised AI fitness blueprint</div>
+        <label for="gateName">Your name</label>
+        <input type="text" id="gateName" placeholder="e.g. Ahmed"/>
+      </div>
+      <div>
+        <label for="gatePhone">WhatsApp number</label>
+        <div class="phone-wrap">
+          <span class="phone-prefix">📱</span>
+          <input type="tel" id="gatePhone" placeholder="+44 7700 000000"/>
+        </div>
+      </div>
+    </div>
+    <button class="btn btn-mint" id="gateSubmitBtn" onclick="submitGate()">
+      🚀 Unlock My Blueprint
+    </button>
+    <p class="gate-note" style="margin-top:12px">🔒 We respect your privacy. No spam, ever.</p>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════
+     MAIN APP
+══════════════════════════════════════════ -->
+<div id="app">
+
+  <!-- HERO -->
+  <header class="hero">
+    <div class="hero-badge">⚡ AI-Powered</div>
+    <h1>Your Personal<br/>Transformation Blueprint</h1>
+    <p>Answer a few questions and get a fully personalised fitness plan, BMI analysis, AI coaching, and 90-day forecast — free.</p>
+  </header>
+
+  <!-- ── STEP 1: CORE STATS ── -->
+  <div class="card reveal" id="formCard">
+    <div class="card-title">
+      <div class="icon icon-violet">📏</div>
+      Tell us about yourself
+    </div>
+
+    <div class="field-group">
+      <div class="field-row">
+        <div>
+          <label for="age">Age</label>
+          <input type="number" id="age" placeholder="e.g. 28" min="14" max="80"/>
+        </div>
+        <div>
+          <label>Gender</label>
+          <div class="segment" id="genderSeg">
+            <button class="seg-btn active" data-val="male" onclick="setSeg('gender',this)">♂ Male</button>
+            <button class="seg-btn" data-val="female" onclick="setSeg('gender',this)">♀ Female</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="field-row">
+        <div>
+          <label for="heightCm">Height (cm)</label>
+          <input type="number" id="heightCm" placeholder="e.g. 175" min="120" max="230"/>
+        </div>
+        <div>
+          <label for="weightKg">Weight (kg)</label>
+          <input type="number" id="weightKg" placeholder="e.g. 80" min="30" max="300"/>
+        </div>
       </div>
     </div>
 
-    <div id="results-container"></div>
+    <div class="divider" style="margin:20px 0"></div>
 
-    <div class="results-divider"></div>
+    <!-- GOAL -->
+    <div class="card-title" style="margin-bottom:12px">
+      <div class="icon icon-mint">🎯</div>
+      What's your dream transformation?
+    </div>
+    <div class="segment" id="goalSeg" style="flex-wrap:wrap">
+      <button class="seg-btn active" data-val="fat_loss" onclick="setSeg('goal',this)">🔥 Lose Fat</button>
+      <button class="seg-btn" data-val="muscle_gain" onclick="setSeg('goal',this)">💪 Build Muscle</button>
+      <button class="seg-btn" data-val="recomp" onclick="setSeg('goal',this)">⚖️ Recomposition</button>
+      <button class="seg-btn" data-val="strength" onclick="setSeg('goal',this)">🏋️ Get Stronger</button>
+    </div>
 
-    <div class="gym-cta-block slide-up">
-      <h3>Ready to train with us?</h3>
-      <p>Book a free trial session and meet your coach in person.</p>
-      <button class="btn-primary" onclick="alert('Redirect to booking or WhatsApp here!')">
-        Book My Free Trial →
+    <div class="divider" style="margin:20px 0"></div>
+
+    <!-- ACTIVITY -->
+    <div class="card-title" style="margin-bottom:12px">
+      <div class="icon icon-amber">⚡</div>
+      How active are you every day?
+    </div>
+    <div class="segment" id="activitySeg" style="flex-wrap:wrap">
+      <button class="seg-btn active" data-val="sedentary" onclick="setSeg('activity',this)">🛋️ Desk Job</button>
+      <button class="seg-btn" data-val="light" onclick="setSeg('activity',this)">🚶 Light</button>
+      <button class="seg-btn" data-val="moderate" onclick="setSeg('activity',this)">🏃 Active</button>
+      <button class="seg-btn" data-val="very_active" onclick="setSeg('activity',this)">⚡ Very Active</button>
+    </div>
+
+    <div style="margin-top:24px">
+      <button class="btn btn-primary" onclick="analyseAndShowGate()">
+        🔍 Analyse My Fitness Profile
       </button>
     </div>
-  </div>
-</section>
+  </div><!-- /formCard -->
 
+  <!-- ═══════════════════════════════════════
+       RESULTS (shown after gate submit)
+  ═══════════════════════════════════════ -->
+  <div id="results-section">
 
-<!-- ════════════════════ MODAL 1 — STATS ════════════════════ -->
-<div class="modal-overlay" id="modal-stats">
-  <div class="modal-sheet">
-    <div class="modal-drag"></div>
-    <div class="modal-head">
-      <span class="modal-step-tag">Step 01 · Stats</span>
-      <button class="btn-close" onclick="closeModal('modal-stats')">✕</button>
-    </div>
-    <div class="modal-body">
-      <div class="modal-title">Your core stats</div>
-      <div class="modal-sub">Used to calculate your exact caloric needs via the Mifflin-St Jeor formula.</div>
-
-      <div class="grid-2">
-        <div class="field-group">
-          <label class="field-label">Age</label>
-          <input type="number" id="input-age" class="field-input" placeholder="e.g. 24" min="14" max="75"/>
-        </div>
-        <div class="field-group">
-          <label class="field-label">Gender</label>
-          <select id="input-gender" class="field-input" style="appearance:none; -webkit-appearance:none; cursor:pointer;">
-            <option value="">Select…</option>
-            <option value="male">Male</option>
-            <option value="female">Female</option>
-          </select>
+    <!-- ── GREETING ── -->
+    <div class="card reveal" id="greetingCard" style="background:linear-gradient(135deg,rgba(124,77,255,0.15) 0%,rgba(0,229,160,0.06) 100%); border-color:rgba(124,77,255,0.25)">
+      <div style="display:flex;align-items:center;gap:14px">
+        <div style="font-size:2.2rem">🤖</div>
+        <div>
+          <div style="font-family:var(--font-display);font-size:1.1rem;font-weight:800" id="greetingText">Hey! Your blueprint is ready.</div>
+          <div style="font-size:13px;color:var(--text-2);margin-top:3px" id="greetingSubtext">Here's what the AI found for your profile.</div>
         </div>
       </div>
-      <div class="grid-2">
-        <div class="field-group">
-          <label class="field-label">Height (cm)</label>
-          <input type="number" id="input-height" class="field-input" placeholder="e.g. 175" min="130" max="220"/>
-        </div>
-        <div class="field-group">
-          <label class="field-label">Weight (kg)</label>
-          <input type="number" id="input-weight" class="field-input" placeholder="e.g. 72" min="35" max="200"/>
+    </div>
+
+    <!-- ── BMI ANALYSER ── -->
+    <div class="card reveal section" id="bmiCard">
+      <div class="card-title">
+        <div class="icon icon-sky">📊</div>
+        BMI Analysis
+      </div>
+      <div class="bmi-dial-wrap">
+        <!-- SVG Ring -->
+        <svg width="160" height="160" viewBox="0 0 160 160" id="bmiRingSvg">
+          <circle cx="80" cy="80" r="66" fill="none" stroke="rgba(255,255,255,0.06)" stroke-width="10"/>
+          <circle cx="80" cy="80" r="66" fill="none" stroke-width="10"
+            stroke-linecap="round"
+            stroke-dasharray="414.69"
+            stroke-dashoffset="414.69"
+            transform="rotate(-90 80 80)"
+            id="bmiArc"
+            style="transition:stroke-dashoffset 1.5s cubic-bezier(.22,1,.36,1), stroke .4s"/>
+          <text x="80" y="72" text-anchor="middle" font-family="'Space Grotesk',sans-serif"
+            font-size="30" font-weight="800" fill="white" id="bmiValText">--</text>
+          <text x="80" y="92" text-anchor="middle" font-family="'Inter',sans-serif"
+            font-size="12" font-weight="600" fill="rgba(255,255,255,0.45)" id="bmiCatText">BMI</text>
+        </svg>
+        <div class="bmi-categories">
+          <span class="bmi-cat bmi-underweight" id="bcat-under">🟦 Underweight</span>
+          <span class="bmi-cat bmi-healthy"     id="bcat-healthy">🟢 Healthy</span>
+          <span class="bmi-cat bmi-overweight"  id="bcat-over">🟠 Overweight</span>
+          <span class="bmi-cat bmi-obese"       id="bcat-obese">🔴 Obese</span>
         </div>
       </div>
-
-      <button class="btn-primary" onclick="saveStats()">Save & continue →</button>
-      <p id="error-stats" class="error-msg">Please fill all fields correctly.</p>
+      <div class="coach-advice" id="bmiAdvice"></div>
     </div>
-  </div>
-</div>
 
-
-<!-- ════════════════════ MODAL 2 — GOAL ════════════════════ -->
-<div class="modal-overlay" id="modal-goal">
-  <div class="modal-sheet">
-    <div class="modal-drag"></div>
-    <div class="modal-head">
-      <span class="modal-step-tag">Step 02 · Goal</span>
-      <button class="btn-close" onclick="closeModal('modal-goal')">✕</button>
-    </div>
-    <div class="modal-body">
-      <div class="modal-title">What's your goal?</div>
-      <div class="modal-sub">Your entire plan — calories, macros, and training — changes based on this choice.</div>
-
-      <div class="goal-grid">
-        <div class="goal-card" id="goal-lose" onclick="selectGoal('lose_fat')">
-          <span class="goal-emoji">🔥</span>
-          <div class="goal-name">Lose Fat</div>
-          <div class="goal-hint">Burn & define</div>
-        </div>
-        <div class="goal-card" id="goal-build" onclick="selectGoal('build_muscle')">
-          <span class="goal-emoji">💪</span>
-          <div class="goal-name">Build Muscle</div>
-          <div class="goal-hint">Grow & strengthen</div>
-        </div>
-        <div class="goal-card" id="goal-stay" onclick="selectGoal('stay_fit')">
-          <span class="goal-emoji">⚖️</span>
-          <div class="goal-name">Stay Fit</div>
-          <div class="goal-hint">Maintain & tone</div>
-        </div>
+    <!-- ── AI FITNESS COACH ── -->
+    <div class="card reveal section" id="coachCard">
+      <div class="card-title">
+        <div class="icon icon-violet">🤖</div>
+        AI Coach Report
       </div>
-
-      <button class="btn-primary" onclick="saveGoal()">Save & continue →</button>
-      <p id="error-goal" class="error-msg">Pick a goal to continue.</p>
+      <div class="score-grid" id="scoreGrid"></div>
+      <div class="coach-advice" id="coachAdvice"></div>
     </div>
-  </div>
-</div>
 
-
-<!-- ════════════════════ MODAL 3 — ACTIVITY ════════════════════ -->
-<div class="modal-overlay" id="modal-activity">
-  <div class="modal-sheet">
-    <div class="modal-drag"></div>
-    <div class="modal-head">
-      <span class="modal-step-tag">Step 03 · Activity</span>
-      <button class="btn-close" onclick="closeModal('modal-activity')">✕</button>
-    </div>
-    <div class="modal-body">
-      <div class="modal-title">Activity level</div>
-      <div class="modal-sub">Be honest — this directly adjusts your daily calorie target.</div>
-
-      <div class="activity-list">
-        <div class="activity-item" id="act-sedentary" onclick="selectActivity('sedentary',1.2,'Sedentary','Little or no exercise')">
-          <span class="activity-emoji">🛋️</span>
-          <div>
-            <div class="activity-name">Sedentary</div>
-            <div class="activity-desc">Desk job, little or no exercise</div>
-          </div>
-        </div>
-        <div class="activity-item" id="act-light" onclick="selectActivity('light',1.375,'Lightly Active','Light exercise 1–3 days/week')">
-          <span class="activity-emoji">🚶</span>
-          <div>
-            <div class="activity-name">Lightly Active</div>
-            <div class="activity-desc">Light exercise 1–3 days/week</div>
-          </div>
-        </div>
-        <div class="activity-item" id="act-moderate" onclick="selectActivity('moderate',1.55,'Moderately Active','Exercise 3–5 days/week')">
-          <span class="activity-emoji">🏋️</span>
-          <div>
-            <div class="activity-name">Moderately Active</div>
-            <div class="activity-desc">Exercise 3–5 days/week</div>
-          </div>
-        </div>
-        <div class="activity-item" id="act-very" onclick="selectActivity('very',1.725,'Very Active','Hard exercise 6–7 days/week')">
-          <span class="activity-emoji">⚡</span>
-          <div>
-            <div class="activity-name">Very Active</div>
-            <div class="activity-desc">Hard exercise 6–7 days/week</div>
-          </div>
-        </div>
-        <div class="activity-item" id="act-athlete" onclick="selectActivity('athlete',1.9,'Athlete','Intense daily training or physical job')">
-          <span class="activity-emoji">🏆</span>
-          <div>
-            <div class="activity-name">Athlete / Physical Job</div>
-            <div class="activity-desc">Intense daily training or physical work</div>
-          </div>
-        </div>
+    <!-- ── TRANSFORMATION PREDICTOR ── -->
+    <div class="card reveal section" id="transformCard">
+      <div class="card-title">
+        <div class="icon icon-mint">📈</div>
+        90-Day Transformation Forecast
       </div>
-
-      <button class="btn-primary" onclick="saveActivity()">Save & continue →</button>
-      <p id="error-activity" class="error-msg">Choose your activity level to continue.</p>
-    </div>
-  </div>
-</div>
-
-
-<!-- ════════════════════ MODAL 4 — LEAD CAPTURE ════════════════════ -->
-<div class="modal-overlay" id="modal-lead">
-  <div class="modal-sheet">
-    <div class="modal-drag"></div>
-
-    <!-- State A: form -->
-    <div id="lead-form-state">
-      <div class="modal-head">
-        <span class="modal-step-tag">🎉 Plan ready</span>
-        <button class="btn-close" onclick="closeModal('modal-lead')">✕</button>
-      </div>
-      <div class="modal-body">
-        <div class="modal-title">Your blueprint is ready.</div>
-        <div class="modal-sub">Enter your details and we'll send it — plus exclusive gym offers — straight to WhatsApp.</div>
-
-        <div class="field-group">
-          <label class="field-label">Full name</label>
-          <input type="text" id="input-name" class="field-input" placeholder="e.g. Ahmed Raza"/>
+      <div class="timeline" id="transformTimeline"></div>
+      <div class="mt-4">
+        <div class="progress-track">
+          <div class="progress-fill" id="transformProgress" style="width:0%"></div>
         </div>
-        <div class="field-group">
-          <label class="field-label">WhatsApp number</label>
-          <div class="phone-wrap">
-            <div class="phone-flag">🇵🇰 +92</div>
-            <input type="tel" id="input-phone" class="field-input" placeholder="3001234567" maxlength="10"/>
-          </div>
+        <div style="display:flex;justify-content:space-between;margin-top:6px;font-size:11px;color:var(--text-3)">
+          <span>Today</span><span>90 Days</span>
         </div>
-
-        <button class="btn-primary" onclick="submitLead()">Send me the plan 📲</button>
-        <p id="error-lead" class="error-msg">Enter your name and a valid number.</p>
-        <p style="text-align:center; font-size:11px; color:var(--haze); margin-top:12px;">🔒 We never share your data. No spam, ever.</p>
       </div>
     </div>
 
-    <!-- State B: success -->
-    <div id="lead-success-state" style="display:none;" class="modal-body">
-      <div class="success-wrap">
-        <div class="success-ring">🚀</div>
-        <div class="modal-title" style="margin-bottom:8px;">Plan sent!</div>
-        <div class="modal-sub" style="margin-bottom:24px;">Check WhatsApp in a moment — your blueprint is being personalised.</div>
-        <button class="btn-primary" onclick="showResults()">View my plan →</button>
+    <!-- ── PROGRAM RECOMMENDATION ── -->
+    <div class="card reveal section" id="programCard" style="background:linear-gradient(135deg,rgba(124,77,255,0.1),rgba(0,0,0,0))">
+      <div class="section-label">🔥 Recommended Program</div>
+      <div id="programContent"></div>
+    </div>
+
+    <!-- ── ACHIEVEMENTS ── -->
+    <div class="card reveal section" id="achieveCard">
+      <div class="card-title">
+        <div class="icon icon-amber">🏆</div>
+        Your Achievement Badges
+      </div>
+      <div class="badge-grid" id="badgeGrid"></div>
+    </div>
+
+    <!-- ── WORKOUT CHECKLIST ── -->
+    <div class="card reveal section" id="workoutCard">
+      <div class="card-title">
+        <div class="icon icon-rose">💪</div>
+        Today's Workout Plan
+      </div>
+      <div class="workout-progress-header">
+        <div class="workout-count" id="workoutCount">0 / 0 Exercises</div>
+        <div style="font-size:13px;color:var(--text-2)">tap to check off</div>
+      </div>
+      <div class="progress-track mb-3">
+        <div class="progress-fill" id="workoutProgress" style="width:0%"></div>
+      </div>
+      <div class="checklist" id="workoutChecklist"></div>
+    </div>
+
+    <!-- ── NUTRITION TARGETS ── -->
+    <div class="card reveal section" id="nutritionCard">
+      <div class="card-title">
+        <div class="icon icon-mint">🥗</div>
+        Your Daily Nutrition Targets
+      </div>
+      <div class="stat-grid" id="nutritionStats"></div>
+      <div class="macro-row" id="macroRow"></div>
+      <div class="coach-advice mt-4" id="nutritionTip"></div>
+    </div>
+
+    <!-- ── STREAK TRACKER ── -->
+    <div class="card reveal section" id="streakCard">
+      <div class="card-title">
+        <div class="icon icon-amber">🔥</div>
+        Workout Streak
+      </div>
+      <div class="streak-header">
+        <div class="streak-fire">🔥</div>
+        <div>
+          <div class="streak-count" id="streakCount">0</div>
+          <div class="streak-label">day streak</div>
+        </div>
+      </div>
+      <div class="week-grid" id="weekGrid"></div>
+      <div class="streak-message" id="streakMessage"></div>
+    </div>
+
+    <!-- ── COMMUNITY LEADERBOARD ── -->
+    <div class="card reveal section" id="lbCard">
+      <div class="card-title">
+        <div class="icon icon-violet">🏆</div>
+        Community Leaderboard
+      </div>
+      <div class="lb-list" id="lbList"></div>
+      <div style="text-align:center;margin-top:16px;font-size:13px;color:var(--text-2)">
+        Complete your workouts to climb the rankings 🚀
       </div>
     </div>
-  </div>
-</div>
 
+  </div><!-- /results-section -->
+
+</div><!-- /app -->
 
 <script>
-  /* ── STATE ── */
-  const state = {
-    age:null, gender:null, height:null, weight:null,
-    goal:null,
-    activityKey:null, activityMultiplier:null, activityLabel:null, activitySub:null,
-    name:null, phone:null,
-    bmr:null, tdee:null
+/* ============================================================
+   STATE
+============================================================ */
+const state = {
+  gender: 'male',
+  goal: 'fat_loss',
+  activity: 'sedentary',
+  userName: '',
+  phone: ''
+};
+
+let currentExercises = [];
+
+/* ============================================================
+   SEGMENT CONTROLS
+============================================================ */
+function setSeg(key, btn) {
+  const wrap = btn.parentElement;
+  wrap.querySelectorAll('.seg-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  state[key] = btn.dataset.val;
+}
+
+/* ============================================================
+   SCROLL REVEAL
+============================================================ */
+const observer = new IntersectionObserver(entries => {
+  entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('in'); });
+}, { threshold: 0.1 });
+function observeReveals() {
+  document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+}
+document.addEventListener('DOMContentLoaded', observeReveals);
+
+/* ============================================================
+   VALIDATE + SHOW GATE
+============================================================ */
+function analyseAndShowGate() {
+  const age = parseInt(document.getElementById('age').value);
+  const height = parseFloat(document.getElementById('heightCm').value);
+  const weight = parseFloat(document.getElementById('weightKg').value);
+
+  if (!age || !height || !weight || age < 14 || height < 120 || weight < 30) {
+    alert('Please fill in your age, height, and weight to continue. 🙌');
+    return;
+  }
+  document.getElementById('gateOverlay').classList.remove('hidden');
+}
+
+/* ============================================================
+   GATE SUBMIT
+============================================================ */
+function submitGate() {
+  const name  = document.getElementById('gateName').value.trim();
+  const phone = document.getElementById('gatePhone').value.trim();
+  if (!name || !phone) { alert('Please enter your name and WhatsApp number.'); return; }
+
+  state.userName = name;
+  state.phone    = phone;
+
+  // Save lead to localStorage
+  const leads = JSON.parse(localStorage.getItem('gymai_leads') || '[]');
+  leads.push({ name, phone, ts: Date.now() });
+  localStorage.setItem('gymai_leads', JSON.stringify(leads));
+
+  document.getElementById('gateOverlay').classList.add('hidden');
+  buildResults();
+}
+
+/* ============================================================
+   MAIN: BUILD ALL RESULTS
+============================================================ */
+function buildResults() {
+  const age    = parseInt(document.getElementById('age').value);
+  const height = parseFloat(document.getElementById('heightCm').value);
+  const weight = parseFloat(document.getElementById('weightKg').value);
+  const { gender, goal, activity } = state;
+
+  // Derived values
+  const bmi     = weight / Math.pow(height / 100, 2);
+  const bmr     = calcBMR(gender, weight, height, age);
+  const tdee    = calcTDEE(bmr, activity);
+  const target  = calcTargetCalories(tdee, goal);
+
+  // Show section
+  const resultsEl = document.getElementById('results-section');
+  resultsEl.classList.add('visible');
+  resultsEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
+
+  // Build each block
+  buildGreeting(state.userName, goal);
+  buildBMI(bmi, weight, height, goal);
+  buildCoach(age, gender, height, weight, bmi, goal, activity);
+  buildTransformation(weight, goal, target);
+  buildProgram(goal, bmi, activity);
+  buildAchievements(age, bmi, goal, activity);
+  buildWorkoutChecklist(goal);
+  buildNutrition(target, weight, goal, gender);
+  buildStreak();
+  buildLeaderboard();
+
+  setTimeout(observeReveals, 100);
+}
+
+/* ── GREETING ── */
+function buildGreeting(name, goal) {
+  const goalLabels = {
+    fat_loss: 'fat loss', muscle_gain: 'muscle building',
+    recomp: 'body recomposition', strength: 'strength training'
+  };
+  document.getElementById('greetingText').textContent =
+    `Hey ${name}! Your blueprint is ready. 🎉`;
+  document.getElementById('greetingSubtext').textContent =
+    `AI-powered insights tailored for your ${goalLabels[goal]} journey.`;
+}
+
+/* ── BMR / TDEE ── */
+function calcBMR(gender, w, h, a) {
+  // Mifflin-St Jeor
+  return gender === 'male'
+    ? 10 * w + 6.25 * h - 5 * a + 5
+    : 10 * w + 6.25 * h - 5 * a - 161;
+}
+function calcTDEE(bmr, activity) {
+  const m = { sedentary:1.2, light:1.375, moderate:1.55, very_active:1.725 };
+  return Math.round(bmr * (m[activity] || 1.2));
+}
+function calcTargetCalories(tdee, goal) {
+  const adj = { fat_loss:-500, muscle_gain:300, recomp:-200, strength:150 };
+  return tdee + (adj[goal] || 0);
+}
+
+/* ── BMI ── */
+function buildBMI(bmi, weight, height, goal) {
+  const score = bmi.toFixed(1);
+  document.getElementById('bmiValText').textContent = score;
+
+  let cat, colour, advice, catId;
+  if      (bmi < 18.5) { cat='Underweight'; colour='#38c0ff'; catId='under'; }
+  else if (bmi < 25)   { cat='Healthy';     colour='#00e5a0'; catId='healthy'; }
+  else if (bmi < 30)   { cat='Overweight';  colour='#ffb547'; catId='over'; }
+  else                 { cat='Obese';        colour='#ff5f7e'; catId='obese'; }
+
+  document.getElementById('bmiCatText').textContent = cat;
+
+  // Highlight category badge
+  ['under','healthy','over','obese'].forEach(id => {
+    document.getElementById('bcat-'+id).classList.remove('active');
+  });
+  document.getElementById('bcat-'+catId).classList.add('active');
+
+  // Arc animation: map BMI 15–40 → 0–100%
+  const pct = Math.min(Math.max((bmi - 15) / 25, 0), 1);
+  const circ = 2 * Math.PI * 66;
+  const arc = document.getElementById('bmiArc');
+  arc.style.stroke = colour;
+  setTimeout(() => {
+    arc.style.strokeDashoffset = circ * (1 - pct * 0.75);
+  }, 300);
+
+  // Advice
+  const adviceMap = {
+    under:   `Your BMI of <strong>${score}</strong> is below the healthy range. Prioritise calorie-dense whole foods and progressive resistance training to build lean mass. Aim for <strong>+300–500 kcal/day</strong> above your maintenance calories.`,
+    healthy: `Your BMI of <strong>${score}</strong> sits in the optimal range — great foundation to work from! Focus on your ${goal === 'fat_loss' ? 'body composition and subtle fat reduction' : 'progressive strength and muscle development'} goals.`,
+    over:    `Your BMI of <strong>${score}</strong> suggests room to improve body composition. A consistent calorie deficit of 300–500 kcal per day combined with 3–4 strength sessions weekly will deliver steady, sustainable results.`,
+    obese:   `Your BMI of <strong>${score}</strong> indicates your health would significantly improve with structured fat loss. Start with low-impact cardio and full-body resistance circuits. Even a <strong>5–10% weight reduction</strong> delivers major health benefits.`
+  };
+  document.getElementById('bmiAdvice').innerHTML = adviceMap[catId];
+}
+
+/* ── AI COACH ── */
+function buildCoach(age, gender, height, weight, bmi, goal, activity) {
+  // Algorithmic scores (0-100)
+  const bmiScore   = bmi < 18.5 ? 55 : bmi < 25 ? 90 : bmi < 30 ? 65 : 40;
+  const ageScore   = age < 30 ? 92 : age < 40 ? 80 : age < 50 ? 68 : 55;
+  const actScore   = {sedentary:50,light:65,moderate:80,very_active:95}[activity] || 65;
+  const fitnessScore = Math.round((bmiScore*0.4 + ageScore*0.3 + actScore*0.3));
+  const strengthScore = Math.round(actScore * 0.9 + (gender === 'male' ? 8 : 0));
+  const recoveryScore = Math.round(100 - (age - 18) * 0.6 + (activity === 'very_active' ? 5 : 0));
+  const fatLoss   = goal === 'fat_loss'    ? Math.min(95,100-bmiScore*0.3+40) : Math.round(60 + (bmi > 25 ? 20 : 0));
+  const muscle    = goal === 'muscle_gain' ? Math.min(95,ageScore*0.8+20)     : Math.round(50 + (bmi < 25 ? 15 : 0));
+
+  const scores = [
+    { label:'Fitness Score',   val: Math.min(99,fitnessScore),  color: 'var(--violet-light)' },
+    { label:'Strength Score',  val: Math.min(99,strengthScore), color: 'var(--mint)' },
+    { label:'Recovery Score',  val: Math.min(99,recoveryScore), color: 'var(--sky)' },
+    { label:'Fat Loss Potential', val:Math.round(Math.min(99,fatLoss)), color:'var(--amber)' },
+  ];
+
+  document.getElementById('scoreGrid').innerHTML = scores.map(s => `
+    <div class="score-item">
+      <span class="score-num" style="color:${s.color}">${s.val}</span>
+      <span class="score-lbl">${s.label}</span>
+    </div>
+  `).join('');
+
+  // Personalised advice
+  const goalAdvice = {
+    fat_loss: `Your biggest opportunity is a <strong>consistent 400–500 kcal daily deficit</strong> paired with 4 strength sessions weekly. Muscle preserved during a cut means your metabolism stays elevated — this is where most people go wrong. Prioritise protein at every meal.`,
+    muscle_gain: `At your stats, progressive overload is the #1 lever. Increase weights or reps every session, eat <strong>+200–300 kcal above maintenance</strong>, and get 7–9 hours of sleep. Your muscle-gain window is wide open.`,
+    recomp: `Body recomposition requires patience — you're burning fat and building muscle simultaneously. Cycle your calories: eat near-maintenance on rest days, slightly above on training days. <strong>High protein (2g/kg)</strong> is non-negotiable here.`,
+    strength: `Strength gains come from neural adaptation first, hypertrophy second. Follow a <strong>linear progression model</strong> — add small weights each session. Compound lifts (squat, deadlift, press) should form the core of every session.`
   };
 
-  let completedSteps = 0;
+  document.getElementById('coachAdvice').innerHTML = `
+    <strong>🤖 AI Coach Insight:</strong><br/><br/>
+    Based on your profile — ${age}y/o ${gender}, BMI ${bmi.toFixed(1)}, ${activity.replace('_',' ')} lifestyle —
+    ${goalAdvice[goal]}
+    <br/><br/>Consistency beats intensity. Show up 80% of the time and you'll outperform someone who trains perfectly for 3 weeks then quits.
+  `;
+}
 
-  /* ── MODAL ── */
-  function openModal(id) {
-    document.getElementById(id).classList.add('active');
-    document.body.style.overflow = 'hidden';
-  }
-  function closeModal(id) {
-    document.getElementById(id).classList.remove('active');
-    document.body.style.overflow = '';
-  }
+/* ── TRANSFORMATION PREDICTOR ── */
+function buildTransformation(weight, goal, targetCals) {
+  // Weekly change estimate
+  const weeklyChange = {
+    fat_loss: -0.5,
+    muscle_gain: 0.25,
+    recomp: -0.15,
+    strength: 0.1
+  }[goal] || -0.4;
 
-  /* ── PROGRESS ── */
-  function updateProgress() {
-    document.getElementById('progress-fill').style.width = (completedSteps / 3 * 100) + '%';
-    document.getElementById('progress-label').textContent = completedSteps + ' / 3 complete';
-  }
+  const days  = [0, 30, 60, 90];
+  const emojis= ['📍','🌱','⚡','🏆'];
+  const descs  = ['Starting weight','Adaptation phase','Momentum phase','Transformation'];
 
-  /* ── STEP 1 ── */
-  function saveStats() {
-    const age    = parseInt(document.getElementById('input-age').value);
-    const gender = document.getElementById('input-gender').value;
-    const height = parseFloat(document.getElementById('input-height').value);
-    const weight = parseFloat(document.getElementById('input-weight').value);
+  const html = days.map((d, i) => {
+    const w = (weight + (d / 7) * weeklyChange).toFixed(1);
+    const diff = (parseFloat(w) - weight).toFixed(1);
+    const diffTxt = diff > 0 ? `+${diff} kg` : `${diff} kg`;
+    const diffColor = goal === 'muscle_gain' ? 'var(--mint)' : (diff < 0 ? 'var(--mint)' : 'var(--text-2)');
+    return `
+      <div class="tl-card">
+        <div class="tl-day">${d === 0 ? 'Today' : `Day ${d}`}</div>
+        <div style="font-size:1.5rem;margin-bottom:4px">${emojis[i]}</div>
+        <div class="tl-weight">${w}<small style="font-size:.6em;color:var(--text-2)">kg</small></div>
+        <div class="tl-change" style="color:${diffColor}">${i === 0 ? 'Baseline' : diffTxt}</div>
+        <div class="tl-note">${descs[i]}</div>
+      </div>`;
+  }).join('');
 
-    if (!age || !gender || !height || !weight || age < 14 || age > 75 || height < 130 || weight < 35) {
-      document.getElementById('error-stats').style.display = 'block'; return;
+  document.getElementById('transformTimeline').innerHTML = html;
+  setTimeout(() => {
+    document.getElementById('transformProgress').style.width = '100%';
+  }, 400);
+}
+
+/* ── PROGRAM RECOMMENDATION ── */
+function buildProgram(goal, bmi, activity) {
+  const programs = {
+    fat_loss: {
+      name:'8-Week Fat Loss Accelerator',
+      tag:'🔥 Fat Loss',
+      reason:'Based on your goal and current BMI, this program combines metabolic resistance training with strategic cardio to maximise fat oxidation while preserving lean muscle.',
+      meta:[{i:'📅',t:'8 Weeks'},{i:'🏋️',t:'4 Days/Week'},{i:'⏱️',t:'45–55 Min'},{i:'📶',t:'Intermediate'}]
+    },
+    muscle_gain: {
+      name:'12-Week Muscle Growth Blueprint',
+      tag:'💪 Hypertrophy',
+      reason:'Progressive overload-focused program structured into Push/Pull/Legs splits. Optimised for your activity level to maximise anabolic stimulus and recovery.',
+      meta:[{i:'📅',t:'12 Weeks'},{i:'🏋️',t:'5 Days/Week'},{i:'⏱️',t:'60–75 Min'},{i:'📶',t:'Intermediate'}]
+    },
+    recomp: {
+      name:'10-Week Body Recomposition Protocol',
+      tag:'⚖️ Recomposition',
+      reason:'A periodised approach cycling between hypertrophy and fat loss phases. Ideal for your profile — you\'ll add muscle while simultaneously leaning down.',
+      meta:[{i:'📅',t:'10 Weeks'},{i:'🏋️',t:'4 Days/Week'},{i:'⏱️',t:'55–65 Min'},{i:'📶',t:'Intermediate'}]
+    },
+    strength: {
+      name:'Elite Strength Foundation Program',
+      tag:'🏆 Strength',
+      reason:'Linear progression model built around the big compound lifts. Designed to maximise neuromuscular adaptation and break through plateaus systematically.',
+      meta:[{i:'📅',t:'12 Weeks'},{i:'🏋️',t:'3–4 Days/Week'},{i:'⏱️',t:'60 Min'},{i:'📶',t:'All Levels'}]
     }
-    document.getElementById('error-stats').style.display = 'none';
-    state.age = age; state.gender = gender; state.height = height; state.weight = weight;
+  };
 
-    if (gender === 'male') state.bmr = 10*weight + 6.25*height - 5*age + 5;
-    else                   state.bmr = 10*weight + 6.25*height - 5*age - 161;
+  const p = programs[goal];
+  document.getElementById('programContent').innerHTML = `
+    <span class="program-tag">${p.tag}</span>
+    <div class="program-title">${p.name}</div>
+    <div class="program-reason">${p.reason}</div>
+    <div class="program-meta">
+      ${p.meta.map(m=>`<div class="pm"><span class="pm-icon">${m.i}</span>${m.t}</div>`).join('')}
+    </div>
+  `;
+}
 
-    markDone('card-stats', 'desc-stats', `${age} yrs · ${gender === 'male' ? 'Male' : 'Female'} · ${height} cm · ${weight} kg`);
-    closeModal('modal-stats');
-    checkCTA();
+/* ── ACHIEVEMENTS ── */
+function buildAchievements(age, bmi, goal, activity) {
+  const allBadges = [
+    { id:'beginner',  icon:'🥉', name:'Beginner Warrior',       cond: true },
+    { id:'healthy',   icon:'💚', name:'Healthy BMI',            cond: bmi >= 18.5 && bmi < 25 },
+    { id:'active',    icon:'⚡', name:'Active Lifestyle',       cond: activity === 'moderate' || activity === 'very_active' },
+    { id:'fat_cand',  icon:'🔥', name:'Fat Loss Candidate',     cond: goal === 'fat_loss' },
+    { id:'muscle',    icon:'💪', name:'Muscle Machine',         cond: goal === 'muscle_gain' },
+    { id:'transform', icon:'🥇', name:'Transformation Ready',   cond: true },
+    { id:'elite',     icon:'🏆', name:'Elite Potential',        cond: activity === 'very_active' && bmi < 25 },
+    { id:'consist',   icon:'🥈', name:'Consistency Builder',    cond: age < 35 },
+    { id:'warrior',   icon:'⚔️', name:'Iron Warrior',           cond: goal === 'strength' },
+    { id:'recomp',    icon:'🌀', name:'Recomp Specialist',      cond: goal === 'recomp' },
+    { id:'young',     icon:'🌟', name:'Young Gun',              cond: age <= 25 },
+    { id:'veteran',   icon:'🦅', name:'Veteran Lifter',         cond: age >= 40 },
+  ];
+
+  document.getElementById('badgeGrid').innerHTML = allBadges.map(b => `
+    <div class="badge-item ${b.cond ? 'earned' : ''}" title="${b.cond ? 'Earned!' : 'Keep going to unlock'}">
+      <span class="badge-icon" style="${!b.cond ? 'filter:grayscale(1);opacity:.3':''}">${b.icon}</span>
+      <div class="badge-name">${b.name}</div>
+    </div>
+  `).join('');
+}
+
+/* ── WORKOUT CHECKLIST ── */
+const workoutPlans = {
+  fat_loss: [
+    {name:'Barbell Squat',        sets:'4 × 12'},
+    {name:'Romanian Deadlift',    sets:'3 × 12'},
+    {name:'Dumbbell Lunges',      sets:'3 × 10/leg'},
+    {name:'Push-Ups',             sets:'4 × 15'},
+    {name:'Cable Row',            sets:'4 × 12'},
+    {name:'Dumbbell Shoulder Press', sets:'3 × 12'},
+    {name:'Plank Hold',           sets:'3 × 45s'},
+    {name:'Battle Ropes',         sets:'4 × 30s'},
+    {name:'Box Jumps',            sets:'3 × 10'},
+    {name:'Treadmill Sprint Intervals', sets:'10 × 30s'}
+  ],
+  muscle_gain: [
+    {name:'Barbell Bench Press',  sets:'4 × 8'},
+    {name:'Incline DB Press',     sets:'4 × 10'},
+    {name:'Cable Flyes',          sets:'3 × 12'},
+    {name:'Overhead Press',       sets:'4 × 8'},
+    {name:'Lateral Raises',       sets:'4 × 15'},
+    {name:'Tricep Dips',          sets:'3 × 10'},
+    {name:'Skull Crushers',       sets:'3 × 12'},
+    {name:'Barbell Squat',        sets:'4 × 8'},
+    {name:'Leg Press',            sets:'4 × 10'},
+    {name:'Leg Curls',            sets:'3 × 12'}
+  ],
+  recomp: [
+    {name:'Deadlift',             sets:'4 × 6'},
+    {name:'Pull-Ups',             sets:'4 × 8'},
+    {name:'Barbell Row',          sets:'4 × 10'},
+    {name:'Face Pulls',           sets:'3 × 15'},
+    {name:'Bicep Curls',          sets:'3 × 12'},
+    {name:'Hammer Curls',         sets:'3 × 12'},
+    {name:'Bulgarian Split Squat',sets:'3 × 10/leg'},
+    {name:'Hip Thrusts',          sets:'4 × 12'},
+    {name:'Ab Wheel Rollout',     sets:'3 × 10'},
+    {name:'Rowing Machine',       sets:'20 min steady'}
+  ],
+  strength: [
+    {name:'Back Squat (Heavy)',   sets:'5 × 5'},
+    {name:'Bench Press (Heavy)',  sets:'5 × 5'},
+    {name:'Deadlift (Heavy)',     sets:'3 × 3'},
+    {name:'Overhead Press',       sets:'4 × 5'},
+    {name:'Barbell Row',          sets:'4 × 5'},
+    {name:'Dips (Weighted)',      sets:'3 × 6'},
+    {name:'Pull-Ups (Weighted)',  sets:'3 × 5'},
+    {name:'Romanian Deadlift',    sets:'3 × 8'},
+    {name:'Leg Press',            sets:'4 × 8'},
+    {name:'Core Circuit',         sets:'3 × rounds'}
+  ]
+};
+
+function buildWorkoutChecklist(goal) {
+  const exercises = workoutPlans[goal] || workoutPlans.fat_loss;
+  currentExercises = exercises;
+
+  const savedKey = `gymai_workout_${goal}_${new Date().toDateString()}`;
+  const saved = JSON.parse(localStorage.getItem(savedKey) || '[]');
+
+  const html = exercises.map((ex, i) => {
+    const done = saved.includes(i);
+    return `
+      <div class="check-item ${done ? 'done' : ''}" id="ex-${i}" onclick="toggleExercise(${i},'${savedKey}')">
+        <div class="check-box">${done ? '✓' : ''}</div>
+        <span class="check-label">${ex.name}</span>
+        <span class="check-sets">${ex.sets}</span>
+      </div>`;
+  }).join('');
+
+  document.getElementById('workoutChecklist').innerHTML = html;
+  updateWorkoutProgress(goal, savedKey);
+}
+
+function toggleExercise(i, savedKey) {
+  const el = document.getElementById('ex-${i}'.replace('${i}', i));
+  const saved = JSON.parse(localStorage.getItem(savedKey) || '[]');
+  const idx = saved.indexOf(i);
+  if (idx === -1) {
+    saved.push(i);
+    el.classList.add('done');
+    el.querySelector('.check-box').textContent = '✓';
+  } else {
+    saved.splice(idx, 1);
+    el.classList.remove('done');
+    el.querySelector('.check-box').textContent = '';
   }
+  localStorage.setItem(savedKey, JSON.stringify(saved));
+  updateWorkoutProgress(state.goal, savedKey);
+}
 
-  /* ── STEP 2 ── */
-  let selectedGoal = null;
-  function selectGoal(g) {
-    selectedGoal = g;
-    ['goal-lose','goal-build','goal-stay'].forEach(id => document.getElementById(id).classList.remove('selected'));
-    const map = { lose_fat:'goal-lose', build_muscle:'goal-build', stay_fit:'goal-stay' };
-    document.getElementById(map[g]).classList.add('selected');
-  }
-  function saveGoal() {
-    if (!selectedGoal) { document.getElementById('error-goal').style.display = 'block'; return; }
-    document.getElementById('error-goal').style.display = 'none';
-    state.goal = selectedGoal;
-    const labels = { lose_fat:'🔥 Lose Fat', build_muscle:'💪 Build Muscle', stay_fit:'⚖️ Stay Fit' };
-    markDone('card-goal', 'desc-goal', labels[selectedGoal]);
-    closeModal('modal-goal');
-    checkCTA();
-  }
+function updateWorkoutProgress(goal, savedKey) {
+  const total = currentExercises.length;
+  const done  = JSON.parse(localStorage.getItem(savedKey) || '[]').length;
+  document.getElementById('workoutCount').textContent = `${done} / ${total} Exercises Completed`;
+  document.getElementById('workoutProgress').style.width = `${(done / total) * 100}%`;
+}
 
-  /* ── STEP 3 ── */
-  let selectedActivity = null;
-  function selectActivity(key, mult, label, sub) {
-    selectedActivity = { key, mult, label, sub };
-    ['act-sedentary','act-light','act-moderate','act-very','act-athlete'].forEach(id =>
-      document.getElementById(id).classList.remove('selected'));
-    document.getElementById('act-' + key).classList.add('selected');
-  }
-  function saveActivity() {
-    if (!selectedActivity) { document.getElementById('error-activity').style.display = 'block'; return; }
-    document.getElementById('error-activity').style.display = 'none';
-    Object.assign(state, {
-      activityKey: selectedActivity.key,
-      activityMultiplier: selectedActivity.mult,
-      activityLabel: selectedActivity.label,
-      activitySub: selectedActivity.sub
-    });
-    markDone('card-activity', 'desc-activity', `${selectedActivity.label} · ${selectedActivity.sub}`);
-    closeModal('modal-activity');
-    checkCTA();
-  }
+/* ── NUTRITION ── */
+function buildNutrition(target, weight, goal, gender) {
+  // Macro splits
+  const splits = {
+    fat_loss:    { p:0.40, c:0.30, f:0.30 },
+    muscle_gain: { p:0.30, c:0.50, f:0.20 },
+    recomp:      { p:0.40, c:0.35, f:0.25 },
+    strength:    { p:0.30, c:0.45, f:0.25 }
+  };
+  const s = splits[goal];
+  const protein = Math.round((target * s.p) / 4);
+  const carbs   = Math.round((target * s.c) / 4);
+  const fat     = Math.round((target * s.f) / 9);
+  const water   = Math.round(weight * 0.035 * 10) / 10;
 
-  /* ── MARK DONE ── */
-  function markDone(cardId, descId, summary) {
-    document.getElementById(cardId).classList.add('completed');
-    document.getElementById(descId).textContent = summary;
-    completedSteps++;
-    updateProgress();
-  }
+  document.getElementById('nutritionStats').innerHTML = `
+    <div class="stat-pill"><span class="val">${target}</span><span class="lbl">kcal / day</span></div>
+    <div class="stat-pill"><span class="val">${protein}g</span><span class="lbl">Protein</span></div>
+    <div class="stat-pill"><span class="val">${carbs}g</span><span class="lbl">Carbs</span></div>
+    <div class="stat-pill"><span class="val">${fat}g</span><span class="lbl">Fat</span></div>
+  `;
 
-  /* ── CTA CHECK ── */
-  function checkCTA() {
-    const cta = document.getElementById('main-cta');
-    const ready = state.age && state.goal && state.activityMultiplier;
-    cta.disabled = !ready;
-    cta.querySelector('span').textContent = ready
-      ? 'Generate my custom plan →'
-      : 'Complete all 3 steps above';
-  }
+  document.getElementById('macroRow').innerHTML = `
+    <div class="macro-card" style="border-color:rgba(124,77,255,0.3)">
+      <div class="macro-grams" style="color:var(--violet-light)">${protein}g</div>
+      <div class="macro-name" style="color:var(--violet-light)">Protein</div>
+      <div class="macro-cal">${protein * 4} kcal</div>
+    </div>
+    <div class="macro-card" style="border-color:rgba(255,181,71,0.3)">
+      <div class="macro-grams" style="color:var(--amber)">${carbs}g</div>
+      <div class="macro-name" style="color:var(--amber)">Carbs</div>
+      <div class="macro-cal">${carbs * 4} kcal</div>
+    </div>
+    <div class="macro-card" style="border-color:rgba(0,229,160,0.3)">
+      <div class="macro-grams" style="color:var(--mint)">${fat}g</div>
+      <div class="macro-name" style="color:var(--mint)">Fat</div>
+      <div class="macro-cal">${fat * 9} kcal</div>
+    </div>
+  `;
 
-  /* ── GENERATE PLAN ── */
-  function handleGeneratePlan() {
-    if (!state.age || !state.goal || !state.activityMultiplier) return;
-    document.getElementById('lead-form-state').style.display = 'block';
-    document.getElementById('lead-success-state').style.display = 'none';
-    document.getElementById('input-name').value = '';
-    document.getElementById('input-phone').value = '';
-    openModal('modal-lead');
-  }
+  const tips = {
+    fat_loss: `Spread your <strong>${protein}g of protein</strong> across 4–5 meals. Prioritise lean sources: chicken breast, white fish, Greek yoghurt, egg whites. Keep carbs around workouts. Drink <strong>${water}L of water daily</strong>.`,
+    muscle_gain: `To build muscle, you need a calorie surplus AND sufficient protein. Eat <strong>${protein}g protein/day</strong> from whole sources. Carbs are your friend here — eat most around training. Don't skip breakfast.`,
+    recomp: `Recomposition nutrition is precise. Hit <strong>${protein}g protein</strong> every single day — this is the #1 factor. Adjust carbs based on training days (more carbs = training day). Fat keeps hormones healthy.`,
+    strength: `Strength requires fuel. Don't under-eat — your <strong>${target} kcal target</strong> is the minimum. Creatine monohydrate (5g/day) is the most evidence-backed supplement for strength. Consider carb-loading before heavy sessions.`
+  };
+  document.getElementById('nutritionTip').innerHTML = `<strong>💡 Nutrition Tip:</strong><br/><br/>${tips[goal]}`;
+}
 
-  /* ── LEAD SUBMIT ── */
-  function submitLead() {
-    const name  = document.getElementById('input-name').value.trim();
-    const phone = document.getElementById('input-phone').value.trim();
-    if (!name || phone.length < 9) { document.getElementById('error-lead').style.display = 'block'; return; }
-    document.getElementById('error-lead').style.display = 'none';
-    state.name = name; state.phone = phone;
+/* ── STREAK TRACKER ── */
+function buildStreak() {
+  const days = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+  const today = new Date().getDay(); // 0=Sun
 
-    console.log('🎯 NEW LEAD:', { name, phone:'+92'+phone, goal:state.goal, age:state.age,
-      gender:state.gender, height:state.height, weight:state.weight,
-      activity:state.activityLabel, ts:new Date().toISOString() });
+  // Load from localStorage
+  const streakKey = 'gymai_streak_week';
+  let streakData = JSON.parse(localStorage.getItem(streakKey) || '{}');
 
-    document.getElementById('lead-form-state').style.display  = 'none';
-    document.getElementById('lead-success-state').style.display = 'block';
-  }
+  const count = Object.values(streakData).filter(Boolean).length;
+  document.getElementById('streakCount').textContent = count;
 
-  /* ── SHOW RESULTS ── */
-  function showResults() {
-    closeModal('modal-lead');
-    state.tdee = Math.round(state.bmr * state.activityMultiplier);
-
-    let calories, proteinG, carbG, fatG, goalLabel, goalDesc;
-
-    if (state.goal === 'lose_fat') {
-      calories = Math.round(state.tdee * 0.80);
-      proteinG = Math.round(state.weight * 2.2);
-      fatG     = Math.round(calories * 0.25 / 9);
-      carbG    = Math.round((calories - proteinG*4 - fatG*9) / 4);
-      goalLabel = 'Fat Loss Deficit Plan';
-      goalDesc  = '20% caloric deficit · high protein · moderate carb';
-    } else if (state.goal === 'build_muscle') {
-      calories = Math.round(state.tdee * 1.10);
-      proteinG = Math.round(state.weight * 2.4);
-      fatG     = Math.round(calories * 0.25 / 9);
-      carbG    = Math.round((calories - proteinG*4 - fatG*9) / 4);
-      goalLabel = 'Muscle Bulking Plan';
-      goalDesc  = '10% caloric surplus · high protein · high carb';
-    } else {
-      calories = state.tdee;
-      proteinG = Math.round(state.weight * 2.0);
-      fatG     = Math.round(calories * 0.30 / 9);
-      carbG    = Math.round((calories - proteinG*4 - fatG*9) / 4);
-      goalLabel = 'Maintenance & Toning Plan';
-      goalDesc  = 'Maintenance calories · balanced macros · full body';
-    }
-
-    if (carbG < 50) carbG = 50;
-    const total = proteinG + carbG + fatG;
-    const pPct  = Math.round(proteinG / total * 100);
-    const cPct  = Math.round(carbG    / total * 100);
-    const fPct  = 100 - pPct - cPct;
-
-    document.getElementById('results-name-greeting').textContent = `Hey ${state.name}! 👋`;
-    document.getElementById('results-container').innerHTML = buildResultsHTML(
-      state.goal, goalLabel, goalDesc, calories, proteinG, carbG, fatG, pPct, cPct, fPct
-    );
-
-    document.getElementById('results-section').classList.add('visible');
-    setTimeout(() => {
-      document.getElementById('results-section').scrollIntoView({ behavior: 'smooth', block: 'start' });
-    }, 120);
-  }
-
-  /* ── RESULTS HTML ── */
-  function buildResultsHTML(goal, label, desc, cal, prot, carb, fat, pPct, cPct, fPct) {
-
-    const macroHTML = `
-      <!-- Calorie card -->
-      <div class="calorie-card slide-up">
-        <div class="cal-label">Daily target</div>
-        <div class="cal-plan-name">${label}</div>
-        <div class="cal-plan-desc">${desc}</div>
-        <div class="cal-num-row">
-          <span class="cal-num">${cal}</span>
-          <span class="cal-unit">kcal / day</span>
+  const html = days.map((d, i) => {
+    const done  = !!streakData[i];
+    const isToday = i === today;
+    return `
+      <div class="day-item">
+        <div class="day-circle ${done ? 'done' : ''} ${isToday ? 'today' : ''}"
+             onclick="toggleStreakDay(${i})" title="Click to toggle ${d}">
+          ${done ? '✅' : (isToday ? '⬜' : '⬜')}
         </div>
+        <div class="day-name">${d}</div>
+      </div>`;
+  }).join('');
+
+  document.getElementById('weekGrid').innerHTML = html;
+
+  const msgs = {
+    0: "Start today — every great streak begins with day one! 🚀",
+    1: "One session done. The journey begins. 💪",
+    2: "Two days strong. You're building a habit! 🔥",
+    3: "Three days in a row. You're on a roll! ⚡",
+    4: "Four days — you're leaving most people behind. 🌟",
+    5: "Five days! You're in the top 10% of committed trainers. 🏅",
+    6: "Six days! One more for a perfect week. 🏆",
+    7: "PERFECT WEEK! Elite status achieved! 🎖️"
+  };
+  document.getElementById('streakMessage').textContent = msgs[count] || msgs[7];
+}
+
+function toggleStreakDay(dayIndex) {
+  const streakKey = 'gymai_streak_week';
+  let streakData = JSON.parse(localStorage.getItem(streakKey) || '{}');
+  streakData[dayIndex] = !streakData[dayIndex];
+  localStorage.setItem(streakKey, JSON.stringify(streakData));
+  buildStreak(); // re-render
+}
+
+/* ── LEADERBOARD ── */
+function buildLeaderboard() {
+  const demoUsers = [
+    { name:'Ahmed Al-Rashid',  streak:24, goal:'Fat Loss',      avatar:'A', color:'#7c4dff' },
+    { name:'Ali Hassan',       streak:18, goal:'Muscle Gain',   avatar:'A', color:'#00e5a0' },
+    { name:'Hassan Ibrahim',   streak:15, goal:'Recomposition', avatar:'H', color:'#ffb547' },
+    { name:'Omar Khalid',      streak:12, goal:'Strength',      avatar:'O', color:'#ff5f7e' },
+    { name:'Yusuf Ahmed',      streak:9,  goal:'Fat Loss',      avatar:'Y', color:'#38c0ff' },
+    { name:'Zaid Mohammed',    streak:7,  goal:'Muscle Gain',   avatar:'Z', color:'#a066ff' },
+    { name:state.userName||'You', streak:1, goal:'In Progress', avatar:(state.userName||'Y')[0].toUpperCase(), color:'#fff', isUser:true },
+  ];
+
+  const ranks = ['🥇','🥈','🥉','4️⃣','5️⃣','6️⃣','7️⃣'];
+
+  document.getElementById('lbList').innerHTML = demoUsers.map((u, i) => `
+    <div class="lb-item" style="${u.isUser ? 'border-color:rgba(124,77,255,0.4);background:rgba(124,77,255,0.07)' : ''}">
+      <div class="lb-rank">${ranks[i] || (i+1)}</div>
+      <div class="lb-avatar" style="background:${u.color}20;border:2px solid ${u.color}40;color:${u.color}">${u.avatar}</div>
+      <div class="lb-info">
+        <div class="lb-name">${u.name} ${u.isUser ? '<span style="font-size:10px;color:var(--violet-light);font-weight:600">(you)</span>' : ''}</div>
+        <div class="lb-detail">🎯 ${u.goal}</div>
       </div>
+      <div class="lb-streak">${u.streak}<small>day streak</small></div>
+    </div>
+  `).join('');
+}
 
-      <!-- Macro tiles -->
-      <div class="macro-grid slide-up d1">
-        <div class="macro-tile">
-          <div class="macro-val">${prot}<span>g</span></div>
-          <div class="macro-name">Protein</div>
-          <div class="macro-pct">${pPct}% of diet</div>
-        </div>
-        <div class="macro-tile">
-          <div class="macro-val">${carb}<span>g</span></div>
-          <div class="macro-name">Carbs</div>
-          <div class="macro-pct">${cPct}% of diet</div>
-        </div>
-        <div class="macro-tile">
-          <div class="macro-val">${fat}<span>g</span></div>
-          <div class="macro-name">Fats</div>
-          <div class="macro-pct">${fPct}% of diet</div>
-        </div>
-      </div>
-
-      <!-- Macro bars -->
-      <div class="macro-bars slide-up d2" style="margin-bottom:14px;">
-        <div class="bar-row">
-          <div class="bar-label-row">
-            <span class="bar-name">Protein</span>
-            <span class="bar-pct">${pPct}%</span>
-          </div>
-          <div class="bar-track"><div class="bar-fill bar-grow" style="width:${pPct}%; background:#FF5C1A;"></div></div>
-        </div>
-        <div class="bar-row">
-          <div class="bar-label-row">
-            <span class="bar-name">Carbohydrates</span>
-            <span class="bar-pct">${cPct}%</span>
-          </div>
-          <div class="bar-track"><div class="bar-fill bar-grow" style="width:${cPct}%; background:#A8C86A; animation-delay:0.2s;"></div></div>
-        </div>
-        <div class="bar-row">
-          <div class="bar-label-row">
-            <span class="bar-name">Fats</span>
-            <span class="bar-pct">${fPct}%</span>
-          </div>
-          <div class="bar-track"><div class="bar-fill bar-grow" style="width:${fPct}%; background:#F0A860; animation-delay:0.4s;"></div></div>
-        </div>
-      </div>
-    `;
-
-    let routineHTML = '';
-
-    if (goal === 'build_muscle') {
-      routineHTML = `
-        <div class="routine-block slide-up d1">
-          <div class="routine-head">
-            <span class="routine-badge" style="background:#FF5C1A; color:#fff;">Strength Training</span>
-            <span class="routine-freq">4 days / week</span>
-          </div>
-          <div class="routine-body">
-            <div class="day-grid">
-              ${['Day 1 · Chest & Triceps','Day 2 · Back & Biceps','Day 3 · Rest / Cardio','Day 4 · Legs & Core',
-                 'Day 5 · Shoulders','Day 6 · Full Body','Day 7 · Rest'].map((d,i) =>
-                `<div class="day-pill ${i===2||i===6?'rest':''}">${d}</div>`).join('')}
-            </div>
-            <div class="tip-box" style="background:#FFF5F0; border:1px solid rgba(255,92,26,0.25); color:var(--coal);">
-              💡 Progressive overload is the key driver of muscle growth — increase weight or reps each week.
-            </div>
-          </div>
-        </div>
-        <div class="routine-block slide-up d2">
-          <div class="routine-head">
-            <span class="routine-badge" style="background:var(--surface); color:var(--mist); border:1px solid var(--border);">Bulking Nutrition</span>
-          </div>
-          <div class="tip-list">
-            ${['Eat every 3–4 hours to consistently hit your calorie target.',
-               'Prioritise rice, oats, and sweet potato as your main carb sources.',
-               'Pre-workout: carb + protein meal 90 minutes before training.',
-               'Post-workout: whey shake + banana within 30 minutes of finishing.'].map(t =>
-              `<div class="tip-item">
-                <div class="tip-bullet"><svg viewBox="0 0 10 8"><polyline points="1,4 3.5,6.5 9,1"/></svg></div>
-                <div class="tip-text">${t}</div>
-              </div>`).join('')}
-          </div>
-        </div>
-      `;
-    } else if (goal === 'lose_fat') {
-      routineHTML = `
-        <div class="routine-block slide-up d1">
-          <div class="routine-head">
-            <span class="routine-badge" style="background:#FDECEA; color:#C0392B;">Cardio Routine</span>
-            <span class="routine-freq">5 days / week</span>
-          </div>
-          <div class="routine-body">
-            <div class="day-grid">
-              ${['Mon · HIIT 20 min','Tue · Weights + Walk','Wed · LISS 40 min','Thu · Weights',
-                 'Fri · HIIT 25 min','Sat · Active Recovery','Sun · Rest'].map((d,i) =>
-                `<div class="day-pill ${i===5||i===6?'rest':''}">${d}</div>`).join('')}
-            </div>
-            <div class="tip-box" style="background:#FFF5F5; border:1px solid #F5C6C6; color:#C0392B;">
-              🔥 HIIT burns more fat post-workout. Aim for 75–85% max heart rate during intervals.
-            </div>
-          </div>
-        </div>
-        <div class="routine-block slide-up d2">
-          <div class="routine-head">
-            <span class="routine-badge" style="background:var(--surface); color:var(--mist); border:1px solid var(--border);">Fat Loss Nutrition</span>
-          </div>
-          <div class="tip-list">
-            ${['Start every meal with protein to control hunger throughout the day.',
-               'Drink 3L of water daily — thirst is frequently mistaken for hunger.',
-               'Cut liquid calories: juice, sodas, and sweet tea quietly sabotage deficits.',
-               'Eat whole foods 80% of the time; build in 20% flexibility to stay consistent.'].map(t =>
-              `<div class="tip-item">
-                <div class="tip-bullet"><svg viewBox="0 0 10 8"><polyline points="1,4 3.5,6.5 9,1"/></svg></div>
-                <div class="tip-text">${t}</div>
-              </div>`).join('')}
-          </div>
-        </div>
-      `;
-    } else {
-      routineHTML = `
-        <div class="routine-block slide-up d1">
-          <div class="routine-head">
-            <span class="routine-badge" style="background:#EEF8F0; color:#2E7D32;">Balanced Routine</span>
-            <span class="routine-freq">5 days / week</span>
-          </div>
-          <div class="routine-body">
-            <div class="day-grid">
-              ${['Mon · Full Body Weights','Tue · 30 min Cardio','Wed · Core & Mobility','Thu · Upper Body',
-                 'Fri · Lower Body','Sat · Leisure Activity','Sun · Rest'].map((d,i) =>
-                `<div class="day-pill ${i===5||i===6?'rest':''}">${d}</div>`).join('')}
-            </div>
-            <div class="tip-box" style="background:#EEF8F0; border:1px solid #A5D6A7; color:#2E7D32;">
-              ⚖️ Consistency beats intensity. 3–5 moderate sessions weekly is the sweet spot for lifelong fitness.
-            </div>
-          </div>
-        </div>
-        <div class="routine-block slide-up d2">
-          <div class="routine-head">
-            <span class="routine-badge" style="background:var(--surface); color:var(--mist); border:1px solid var(--border);">Maintenance Nutrition</span>
-          </div>
-          <div class="tip-list">
-            ${['Track weekly weight trends rather than daily fluctuations.',
-               'Build meals around protein and veg first, then add carbs to fill calories.',
-               'Allow planned free meals — rigid restriction tends to lead to binging.',
-               'Prioritise 7–9 hours of sleep; poor sleep directly accelerates muscle loss.'].map(t =>
-              `<div class="tip-item">
-                <div class="tip-bullet"><svg viewBox="0 0 10 8"><polyline points="1,4 3.5,6.5 9,1"/></svg></div>
-                <div class="tip-text">${t}</div>
-              </div>`).join('')}
-          </div>
-        </div>
-      `;
-    }
-
-    const suppHTML = `
-      <div class="routine-block slide-up d3">
-        <div class="routine-head">
-          <span class="routine-badge" style="background:#F4F0FF; color:#6B3FA0;">Supplement Stack</span>
-          <span class="routine-freq">Optional baseline</span>
-        </div>
-        <div class="routine-body" style="padding-top:12px;">
-          <div class="supp-grid">
-            ${[['Whey Protein','Post-workout recovery'],['Creatine 5g','Strength & power'],
-               ['Omega-3','Joint & heart health'],['Vitamin D3','Immunity & hormones']].map(([n,d]) =>
-              `<div class="supp-item"><div class="supp-name">${n}</div><div class="supp-desc">${d}</div></div>`).join('')}
-          </div>
-        </div>
-      </div>
-    `;
-
-    return macroHTML + routineHTML + suppHTML;
-  }
+/* ============================================================
+   INIT — OBSERVE ON LOAD
+============================================================ */
+window.addEventListener('load', () => {
+  document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+});
 </script>
 </body>
 </html>
